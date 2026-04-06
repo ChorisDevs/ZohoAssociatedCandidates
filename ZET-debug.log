@@ -1,0 +1,75 @@
+[info] [2025-12-11T20:32:08.147Z] : i You're already logged in as htariq@clearlyip.com
+[debug] [2025-12-11T20:32:15.163Z] : >>>> HTTP REQUEST : POST https://accounts.zoho.com/oauth/v2/token/revoke 
+Query params: {"token":"1000.14b282306dc84c29b15007f18fbc12ea.b00e5956461a8ad599a2f725846dc243"}
+
+[debug] [2025-12-11T20:32:16.535Z] : <<<< HTTP RESPONSE : 200
+Response Headers{"server":"ZGS","date":"Thu, 11 Dec 2025 20:32:16 GMT","content-length":"20","connection":"keep-alive","set-cookie":["zalb_b266a5bf57=9f371135a524e2d1f51eb9f41fa26c60; Path=/; Secure; HttpOnly","iamcsr=bee5ff19-0986-470d-b490-1970a8465cd2;path=/;SameSite=Strict;Secure;priority=high"],"x-content-type-options":"nosniff","x-frame-options":"SAMEORIGIN","content-language":"en-US","strict-transport-security":"max-age=64072000; includeSubDomains; preload"}
+
+[info] [2025-12-11T20:32:16.581Z] : √ You've been logged out.
+[info] [2025-12-11T20:33:08.579Z] : 
+[info] [2025-12-11T20:33:08.583Z] : Click this URL to login to your Zoho Account
+[info] [2025-12-11T20:33:08.584Z] : https://accounts.zoho.com/oauth/v2/auth?client_id=1000.gnjph6g96nf23jd4u14tba2egykhik&scope=ZAPPS.apps.ALL%20AaaServer.profile.READ%20ZMProcessors.connectors.CREATE&response_type=code&access_type=offline&prompt=consent&redirect_uri=http%3A%2F%2Flocalhost%3A9005
+[info] [2025-12-11T20:33:08.585Z] : Note: To login to CN DC, update the above URL from accounts.zoho.com to accounts.zoho.com.cn
+[info] [2025-12-11T20:33:08.586Z] : 
+[debug] [2025-12-11T20:33:13.952Z] : DCType Of the user is us
+[debug] [2025-12-11T20:33:13.955Z] : >>>> HTTP REQUEST : POST https://accounts.zoho.com/oauth/v2/token 
+<request query omitted>
+
+[debug] [2025-12-11T20:33:15.252Z] : <<<< HTTP RESPONSE : 200
+Response Headers{"server":"ZGS","date":"Thu, 11 Dec 2025 20:33:14 GMT","content-type":"application/json;charset=UTF-8","content-length":"337","connection":"keep-alive","set-cookie":["zalb_b266a5bf57=9f371135a524e2d1f51eb9f41fa26c60; Path=/; Secure; HttpOnly","iamcsr=55d2a4ab-59e6-44b9-a320-ea9c443d5617;path=/;SameSite=Strict;Secure;priority=high"],"cache-control":"no-store","x-content-type-options":"nosniff","pragma":"no-cache","x-frame-options":"SAMEORIGIN","content-language":"en-US","strict-transport-security":"max-age=64072000; includeSubDomains; preload"}
+
+[debug] [2025-12-11T20:33:15.269Z] : >>>> HTTP REQUEST : GET https://accounts.zoho.com/oauth/user/info 
+
+[debug] [2025-12-11T20:33:15.627Z] : <<<< HTTP RESPONSE : 200
+Response Headers{"server":"ZGS","date":"Thu, 11 Dec 2025 20:33:15 GMT","content-type":"application/json;charset=UTF-8","content-length":"109","connection":"keep-alive","set-cookie":["zalb_b266a5bf57=ca9803f56b086bd11d10c7e23195c2c1; Path=/; Secure; HttpOnly","iamcsr=60861ca6-38b0-41dd-90fa-af8566d3190f;path=/;SameSite=Strict;Secure;priority=high"],"x-content-type-options":"nosniff","cache-control":"private,no-cache,no-store,max-age=0,must-revalidate","pragma":"no-cache","expires":"Thu, 01 Jan 1970 00:00:00 GMT","x-frame-options":"SAMEORIGIN","content-language":"en-US","strict-transport-security":"max-age=64072000; includeSubDomains; preload"}
+
+[info] [2025-12-11T20:33:25.853Z] : i You're already logged in as brett@choris.io
+[info] [2025-12-22T16:07:24.163Z] : i You're already logged in as brett@choris.io
+[info] [2025-12-22T22:34:54.528Z] : i You're already logged in as brett@choris.io
+[info] [2025-12-24T16:11:08.285Z] : i You're already logged in as brett@choris.io
+[info] [2026-01-09T22:11:43.410Z] : i You're already logged in as brett@choris.io
+[info] [2026-01-12T18:28:06.651Z] : i You're already logged in as brett@choris.io
+[debug] [2026-01-12T21:39:28.843Z] : >>>> HTTP REQUEST : POST https://accounts.zoho.com/oauth/v2/token/revoke 
+Query params: {"token":"1000.65118425aee69940c8dc3807f8be2868.550a868a98d71c5837a5eddba101ac97"}
+
+[debug] [2026-01-12T21:39:30.002Z] : <<<< HTTP RESPONSE : 200
+Response Headers{"server":"ZGS","date":"Mon, 12 Jan 2026 21:39:30 GMT","content-length":"20","connection":"keep-alive","set-cookie":["zalb_b266a5bf57=eec3a75d333f4bdde33eea5371b7c1c4; Path=/; Secure; HttpOnly","iamcsr=3281090f-99c2-4f31-ab2d-ef8d66864417;path=/;SameSite=Strict;Secure;priority=high"],"x-content-type-options":"nosniff","x-frame-options":"SAMEORIGIN","content-language":"en-US","strict-transport-security":"max-age=64072000; includeSubDomains; preload"}
+
+[info] [2026-01-12T21:39:30.049Z] : √ You've been logged out.
+[info] [2026-01-12T21:39:38.407Z] : 
+[info] [2026-01-12T21:39:38.410Z] : Click this URL to login to your Zoho Account
+[info] [2026-01-12T21:39:38.411Z] : https://accounts.zoho.com/oauth/v2/auth?client_id=1000.gnjph6g96nf23jd4u14tba2egykhik&scope=ZAPPS.apps.ALL%20AaaServer.profile.READ%20ZMProcessors.connectors.CREATE&response_type=code&access_type=offline&prompt=consent&redirect_uri=http%3A%2F%2Flocalhost%3A9005
+[info] [2026-01-12T21:39:38.413Z] : Note: To login to CN DC, update the above URL from accounts.zoho.com to accounts.zoho.com.cn
+[info] [2026-01-12T21:39:38.414Z] : 
+[debug] [2026-01-12T21:39:45.789Z] : DCType Of the user is us
+[debug] [2026-01-12T21:39:45.792Z] : >>>> HTTP REQUEST : POST https://accounts.zoho.com/oauth/v2/token 
+<request query omitted>
+
+[debug] [2026-01-12T21:39:46.755Z] : <<<< HTTP RESPONSE : 200
+Response Headers{"server":"ZGS","date":"Mon, 12 Jan 2026 21:39:47 GMT","content-type":"application/json;charset=UTF-8","content-length":"337","connection":"keep-alive","set-cookie":["zalb_b266a5bf57=9f371135a524e2d1f51eb9f41fa26c60; Path=/; Secure; HttpOnly","iamcsr=8f8b0f7a-b9eb-4625-8cb8-5fd680cf3fae;path=/;SameSite=Strict;Secure;priority=high"],"cache-control":"no-store","x-content-type-options":"nosniff","pragma":"no-cache","x-frame-options":"SAMEORIGIN","content-language":"en-US","strict-transport-security":"max-age=64072000; includeSubDomains; preload"}
+
+[debug] [2026-01-12T21:39:46.769Z] : >>>> HTTP REQUEST : GET https://accounts.zoho.com/oauth/user/info 
+
+[debug] [2026-01-12T21:39:47.069Z] : <<<< HTTP RESPONSE : 200
+Response Headers{"server":"ZGS","date":"Mon, 12 Jan 2026 21:39:47 GMT","content-type":"application/json;charset=UTF-8","content-length":"109","connection":"keep-alive","set-cookie":["zalb_b266a5bf57=9f371135a524e2d1f51eb9f41fa26c60; Path=/; Secure; HttpOnly","iamcsr=49c52e8a-170f-4099-8f64-c6294f36b6a1;path=/;SameSite=Strict;Secure;priority=high"],"x-content-type-options":"nosniff","cache-control":"private,no-cache,no-store,max-age=0,must-revalidate","pragma":"no-cache","expires":"Thu, 01 Jan 1970 00:00:00 GMT","x-frame-options":"SAMEORIGIN","content-language":"en-US","strict-transport-security":"max-age=64072000; includeSubDomains; preload"}
+
+[info] [2026-01-12T21:39:53.734Z] : i You're already logged in as brett@choris.io
+[info] [2026-01-12T21:48:44.833Z] : i Command ZET push not applicable for the selected service as it is not mapped to ZET online model.
+[info] [2026-01-12T21:49:05.665Z] : i Command ZET cloud_run not applicable for the selected service as it is not mapped to ZET online model.
+[info] [2026-01-12T21:49:31.125Z] : √ Logged as : brett@choris.io
+[info] [2026-01-12T21:49:47.557Z] : i Waiting for response from Sigma....
+
+[debug] [2026-01-12T21:49:47.567Z] : > refreshing access token <
+[debug] [2026-01-12T21:49:47.569Z] : >>>> HTTP REQUEST : POST https://accounts.zoho.com/oauth/v2/token 
+<request query omitted>
+
+[debug] [2026-01-12T21:49:48.749Z] : <<<< HTTP RESPONSE : 200
+Response Headers{"server":"ZGS","date":"Mon, 12 Jan 2026 21:49:49 GMT","content-type":"application/json;charset=UTF-8","content-length":"248","connection":"keep-alive","set-cookie":["zalb_b266a5bf57=9f371135a524e2d1f51eb9f41fa26c60; Path=/; Secure; HttpOnly","iamcsr=88b7b1f5-39b1-4853-b223-442520225ce2;path=/;SameSite=Strict;Secure;priority=high"],"cache-control":"no-store","x-content-type-options":"nosniff","pragma":"no-cache","x-frame-options":"SAMEORIGIN","content-language":"en-US","strict-transport-security":"max-age=64072000; includeSubDomains; preload"}
+
+[debug] [2026-01-12T21:49:48.762Z] : >>>> HTTP REQUEST : GET https://sigma.zoho.com/workspace/restapi/workspace 
+Query params: {"workspace_type":1}
+
+[debug] [2026-01-12T21:49:49.859Z] : <<<< HTTP RESPONSE : 200
+Response Headers{"server":"ZGS","date":"Mon, 12 Jan 2026 21:49:50 GMT","content-type":"application/json;charset=UTF-8","transfer-encoding":"chunked","connection":"keep-alive","set-cookie":["zalb_4ae9145f4f=fb896e1559e0f0209688b6294e01a46a; Path=/; Secure; HttpOnly","zact=84b19f9f-4ad6-4cf1-950f-3269b3bedf74;path=/;SameSite=Strict;Secure;priority=high"],"x-content-type-options":"nosniff","cache-control":"private,no-cache,no-store,max-age=0,must-revalidate","pragma":"no-cache","expires":"Thu, 01 Jan 1970 00:00:00 GMT","x-frame-options":"SAMEORIGIN","vary":"accept-encoding","content-language":"en-US","strict-transport-security":"max-age=64072000; includeSubDomains; preload"}
+
+[info] [2026-01-12T21:49:49.871Z] : √ Since you only have one Workspace, 'choris', it has been set as the default Workspace.
