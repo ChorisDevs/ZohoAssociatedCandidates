@@ -1,0 +1,3711 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Zoho Recruit Widget</title>
+    <link rel="stylesheet" href="CSS/styles.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css"
+      rel="stylesheet" />
+    <link
+      href="https://cdn.datatables.net/2.1.8/css/dataTables.bootstrap5.css"
+      rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+    <style>
+      input[type="date"]#hireDate::-webkit-calendar-picker-indicator {
+        background: transparent;
+        bottom: 0;
+        color: transparent;
+        cursor: pointer;
+        height: 100%;
+        left: 0;
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 100%;
+      }
+      input[type="date"]#hireDate {
+        position: relative;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="widget-container d-none" id="widgetUnhired">
+      <div style="width: 100%; display: flex; justify-content: space-between">
+        <div class="d-flex flex-column" style="width: 45%">
+          <p class="w-100">
+            <span class="fw-bolder"> Job Title: </span>
+            <span id="job-title" class="text-sm fw-normal"></span>
+          </p>
+          <div>
+            <button
+              id="loadingSendJobReqFormtoClient"
+              class="btn btn-primary d-none mb-2 w-75"
+              type="button"
+              disabled
+              style="min-width: 252.49px; font-size: small">
+              <span
+                class="spinner-border spinner-border-sm"
+                role="status"
+                aria-hidden="true"></span>
+              Loading...
+            </button>
+            <button
+              id="sendJobReqFormtoClient"
+              class="btn btn-primary mb-2 w-75"
+              style="min-width: 252.49px; font-size: small">
+              Send Job Req- Form to Client
+            </button>
+            <button
+              id="loadingEngagementAgreement"
+              class="btn btn-danger d-none mb-2 w-75"
+              type="button"
+              disabled
+              style="min-width: 252.49px; font-size: small">
+              <span
+                class="spinner-border spinner-border-sm"
+                role="status"
+                aria-hidden="true"></span>
+              Loading...
+            </button>
+            <button
+              id="sendEngagementAgreement"
+              class="btn btn-primary d-none mb-2 text-nowrap"
+              style="min-width: 252.49px; font-size: small">
+              Create & Send Engagement Agreement
+            </button>
+            <button
+              id="voidEngagementAgreement"
+              class="btn btn-danger d-none mb-2 w-75"
+              style="min-width: 252.49px; font-size: small">
+              Void Engagement Agreement
+            </button>
+          </div>
+        </div>
+
+        <div class="d-flex flex-column" style="width: 55%">
+          <p class="w-100">
+            <span class="fw-bolder"> Client Name: </span>
+            <span id="client-name" class="text-sm fw-normal"></span>
+          </p>
+          <p class="w-100">
+            <span class="fw-bolder">Client Phone: </span>
+            <span id="client-phone" class="text-sm fw-normal"></span>
+          </p>
+          <p class="w-100 mb-1 d-flex gap-2">
+            <span class="fw-bolder text-nowrap"> Client Email: </span>
+            <span id="client-email" class="w-100 text-sm fw-normal"></span>
+          </p>
+        </div>
+      </div>
+      <div class="d-flex" style="width: 100%">
+        <div style="width: 45%">
+          <button
+            id="sendEmailBtn"
+            class="btn btn-primary me-2 text-nowrap"
+            style="min-width: 252.53px; font-size: small"
+            disabled>
+            Email Candidate Summary
+          </button>
+        </div>
+        <div style="width: 55%">
+          <button
+            id="hireBtn"
+            class="btn btn-success"
+            style="font-size: small"
+            disabled>
+            Hire
+          </button>
+        </div>
+      </div>
+      <header>
+        <div
+          class="button-container"
+          style="
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+          ">
+          <div class="d-flex flex-column"></div>
+          <div></div>
+        </div>
+      </header>
+      <section id="associatedCandidates" class="candidate-list">
+        <table
+          border="1"
+          cellpadding="5"
+          cellspacing="0"
+          id="assatedCandidateTable"
+          style="width: 100%; text-align: left">
+          <thead>
+            <tr>
+              <th>Select</th>
+              <th>VP Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Candidate rows will be dynamically appended here -->
+          </tbody>
+        </table>
+      </section>
+      <div style="text-align: right; margin-top: 30px">
+        <div class="d-flex justify-content-between pb-4">
+          <div class="d-flex align-items-center">
+            <input
+              type="text"
+              id="searchField"
+              class="form-control"
+              aria-describedby="searchHelpInline"
+              placeholder="Search by Name or Email..." />
+            <button
+              type="button"
+              id="crossBtn"
+              class="btn-close ms-2"
+              aria-label="Close"></button>
+          </div>
+          <div class="">
+            <a href="#" id="associateBtn" class="me-3 associate-link" disabled>
+              Associate More VP
+            </a>
+            <button
+              type="button"
+              class="btn btn-success"
+              id="saveChangesBtn"
+              disabled
+              style="font-size: small">
+              Save Changes
+            </button>
+          </div>
+        </div>
+      </div>
+      <section
+        id="non-associatedCandidates"
+        class="candidate-list"
+        style="display: none; margin-bottom: 2rem; padding-bottom: 20px">
+        <table id="example" class="table table-striped" style="width: 100%">
+          <thead>
+            <tr>
+              <th>Select</th>
+              <th>VP Name</th>
+              <th>Level of English</th>
+              <th>Position Summary</th>
+              <th>Phone</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </section>
+    </div>
+    <div class="widget-container-hired d-none mb-4" id="widgetHired">
+      <h1
+        id="hiredHeader"
+        class="d-flex justify-content-center mt-3 ms-2 text-center"></h1>
+      <div class="d-flex justify-content-center">
+        <hr class="px-4 w-75" />
+      </div>
+      <div class="px-4 d-flex mt-2 gap-2 justify-content-end">
+        <button
+          id="editCandidate"
+          class="btn btn-success items-end"
+          style="font-size: small">
+          Edit Details
+        </button>
+        <button
+          id="associateUnHireBtn"
+          class="btn btn-danger items-end"
+          style="font-size: small">
+          UnHire
+        </button>
+      </div>
+      <div class="d-flex flex-wrap px-4 mt-4 justify-content-end">
+        <p class="w-100 d-flex justify-content-between gap-2">
+          <span class="fw-bolder text-nowrap">Job Title: </span>
+          <span id="job-title-2" class="text-sm fw-normal"></span>
+        </p>
+        <p class="w-100 d-flex justify-content-between gap-2">
+          <span class="fw-bolder text-nowrap">Company Name: </span>
+          <span id="compName" class="text-sm fw-normal"></span>
+        </p>
+        <p class="w-100 d-flex justify-content-between gap-2">
+          <span class="fw-bolder text-nowrap">VP Name: </span>
+          <span id="vaName" class="text-sm fw-normal"></span>
+        </p>
+        <p class="w-100 d-flex justify-content-between gap-2">
+          <span class="fw-bolder text-nowrap">Client Name: </span>
+          <span id="client-name-2" class="text-sm fw-normal"></span>
+        </p>
+        <p class="w-100 d-flex justify-content-between gap-2">
+          <span class="fw-bolder text-nowrap">Full/Part Time: </span>
+          <span id="full-part-time-2" class="text-sm fw-normal"></span>
+        </p>
+        <div class="d-flex justify-content-center w-100">
+          <hr class="px-4 w-75" />
+        </div>
+        <div class="d-flex justify-content-between w-100 mb-3 mt-2">
+          <div>
+            <button
+              id="sendVPEvaluation"
+              class="btn btn-primary w-100"
+              style="font-size: small">
+              Send VP Evaluation Form
+            </button>
+          </div>
+          <div>
+            <button
+              id="createClientAgreement"
+              class="btn btn-primary w-100"
+              style="font-size: small">
+              Create & Send Client Agreement
+            </button>
+            <button
+              id="voidClientAgreement"
+              class="btn btn-danger d-none"
+              style="font-size: small">
+              Void Client Agreement
+            </button>
+            <button
+              id="loadingCreateClientAgreement"
+              class="btn btn-primary d-none"
+              type="button"
+              disabled
+              style="min-width: 178.09px; font-size: small">
+              <span
+                class="spinner-border spinner-border-sm"
+                role="status"
+                aria-hidden="true"></span>
+              Loading...
+            </button>
+          </div>
+        </div>
+        <p class="w-100 d-flex justify-content-between gap-2">
+          <span class="fw-bolder text-nowrap">Client Street Address: </span>
+          <span id="billing-street" class="text-sm fw-normal"></span>
+        </p>
+        <p class="w-100 d-flex justify-content-between gap-2">
+          <span class="fw-bolder text-nowrap">Client City: </span>
+          <span id="billing-city" class="text-sm fw-normal"></span>
+        </p>
+        <p class="w-100 d-flex justify-content-between gap-2">
+          <span class="fw-bolder text-nowrap">Client State: </span>
+          <span id="billing-state" class="text-sm fw-normal"></span>
+        </p>
+        <p class="w-100 d-flex justify-content-between gap-2">
+          <span class="fw-bolder text-nowrap">Client Zip Code: </span>
+          <span id="billing-zip-code" class="text-sm fw-normal"></span>
+        </p>
+        <p class="w-100 d-flex justify-content-between gap-2">
+          <span class="fw-bolder text-nowrap">Client Billing Rate: </span>
+          <span id="clientBillingRate1" class="text-sm fw-normal"></span>
+        </p>
+        <div class="d-flex justify-content-center w-100">
+          <hr class="px-4 w-75" />
+        </div>
+        <div class="d-flex justify-content-between w-100 mb-3 mt-2">
+          <div>
+            <!-- VP Evaluation Result button removed -->
+          </div>
+          <div>
+            <button
+              id="createCandidateAgreement"
+              style="font-size: small"
+              class="btn btn-primary">
+              Create & Send VP Agreement
+            </button>
+            <button
+              id="voidVPAgreement"
+              class="btn btn-danger d-none"
+              style="min-width: 178.09px; font-size: small">
+              Void VP Agreement
+            </button>
+            <button
+              id="createVpAgreement"
+              class="btn btn-primary d-none"
+              type="button"
+              disabled
+              style="min-width: 178.09px; font-size: small">
+              <span
+                class="spinner-border spinner-border-sm"
+                role="status"
+                aria-hidden="true"
+                style="font-size: small"></span>
+              Loading...
+            </button>
+          </div>
+        </div>
+        <p class="w-100 d-flex justify-content-between gap-2">
+          <span class="fw-bolder text-nowrap">VP Position: </span>
+          <span id="vaPosition" class="text-sm fw-normal"></span>
+        </p>
+        <p class="w-100 d-flex justify-content-between gap-2">
+          <span class="fw-bolder text-nowrap">VP Phone: </span>
+          <span id="candidatePhone" class="text-sm fw-normal"></span>
+        </p>
+        <p class="w-100 d-flex justify-content-between gap-2">
+          <span class="fw-bolder text-nowrap">VP Email: </span>
+          <span id="candidateEmail" class="text-sm fw-normal"></span>
+        </p>
+        <p class="w-100 d-flex justify-content-between gap-2">
+          <span class="fw-bolder text-nowrap">VP Address: </span>
+          <span id="candidateAddress" class="text-sm fw-normal"></span>
+        </p>
+        <p class="w-100 d-flex justify-content-between gap-2">
+          <span class="fw-bolder text-nowrap">VP Country: </span>
+          <span id="candidateCountry" class="text-sm fw-normal"></span>
+        </p>
+        <!-- <p class="w-100 d-flex justify-content-between gap-2">
+          <span class="fw-bolder text-nowrap">Hire Date: </span>
+          <span id="hireDate" class="text-sm fw-normal"></span>
+        </p> -->
+        <p class="w-100 d-flex justify-content-between gap-2">
+          <span class="fw-bolder text-nowrap">Service Commencement Date: </span>
+          <span id="serviceCommencementDate1" class="text-sm fw-normal"></span>
+        </p>
+        <p class="w-100 d-flex justify-content-between gap-2">
+          <span class="fw-bolder text-nowrap">Services to be Performed: </span>
+          <span id="servicesToBePerformed" class="text-sm fw-normal"></span>
+        </p>
+        <p class="w-100 d-flex justify-content-between gap-2">
+          <span class="fw-bolder text-nowrap">Service Hours: </span>
+          <span id="serviceHours1" class="text-sm fw-normal"></span>
+        </p>
+        <p class="w-100 d-flex justify-content-between gap-2">
+          <span class="fw-bolder text-nowrap">VP Monthly Rate: </span>
+          <span id="candidateMonthlyRate1" class="text-sm fw-normal"></span>
+        </p>
+      </div>
+    </div>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+      integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+      crossorigin="anonymous"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+      integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+      crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://static.zohocdn.com/recruit/widgets/javascript/ZRecruitHelper.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.1.0/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.5/js/dataTables.bootstrap5.min.js"></script>
+    <script>
+      ZOHO.embeddedApp.on("Load", async function (data) {
+        $(document).ready(function () {
+          $("#example").DataTable({
+            columns: [
+              { title: "Select", orderable: false }, // Checkbox column
+              { title: "VP Name" },
+              { title: "Level of English" },
+              { title: "Position Summary" },
+              { title: "Phone" },
+            ],
+            //disable sorting on last column
+            // "columnDefs": [
+            //   { "orderable": false, "targets": 4 }
+            // ],
+            language: {
+              //customize pagination prev and next buttons: use arrows instead of words
+              // 'paginate': {
+              //   'previous': '<span class="fa fa-chevron-left"></span>',
+              //   'next': '<span class="fa fa-chevron-right"></span>'
+              // },
+              //customize number of elements to be displayed
+              lengthMenu:
+                'Display <select class="form-control input-sm">' +
+                '<option value="10">10</option>' +
+                '<option value="20">20</option>' +
+                '<option value="30">30</option>' +
+                '<option value="40">40</option>' +
+                '<option value="50">50</option>' +
+                '<option value="-1">All</option>' +
+                "</select> results",
+            },
+          });
+        });
+        var engagementAgreementId;
+        let filteredData = [];
+        var filterData;
+        var engagementFee;
+        var billingStreet;
+        var billingZipCode;
+        var billingState;
+        var billingCity;
+        var jobDescription;
+        var vpPosition;
+        var serviceCommencementDate;
+        var hireDate;
+        var servicesPerformed;
+        var serviceHours;
+        var vpMonthlyRate;
+        var clientBillingRate;
+        var candidateId;
+        var jobTitleEdit;
+        var clientNameEdit;
+        var VPName;
+        var companyName;
+        var allCandidatesResponse;
+        var vpEvaluationName;
+        let hiredCandidateDetails = {};
+        var vpEvaluationId;
+        var candidateEmailFromJob;
+        var candidatePhoneFromJob;
+        var fullPartTime;
+        var finalCandidatesResponse; // Global variable to store all candidates
+
+        // Initialize variables first, then set up event listeners later
+
+        // Enable buttons immediately to allow user interaction while APIs load
+        setTimeout(() => {
+          const associateBtn = document.getElementById("associateBtn");
+          const hireBtn = document.getElementById("hireBtn");
+          const sendEmailBtn = document.getElementById("sendEmailBtn");
+          const saveChangesBtn = document.getElementById("saveChangesBtn");
+
+          if (associateBtn) associateBtn.disabled = false;
+          // hireBtn and sendEmailBtn will be enabled based on selection state
+          if (saveChangesBtn) saveChangesBtn.disabled = false;
+        }, 100);
+
+        var selectedCandidateId = "";
+        let id = data.meta.recordId,
+          module = data.meta.module;
+        ZOHO.RECRUIT.API.getRecord({
+          Entity: "Job_Openings",
+          RecordID: id,
+        }).then(
+          function (successResponse) {
+            console.log(successResponse);
+            const jobTitle = document.getElementById("job-title");
+            if (jobTitle) {
+              jobTitle.innerText =
+                successResponse?.data[0]?.Job_Opening_Name ?? "";
+            }
+            const clientName = document.getElementById("client-name");
+            document.getElementById("client-phone").innerText =
+              successResponse?.data[0]?.Client_Phone;
+            document.getElementById("client-email").innerText =
+              successResponse?.data[0]?.Client_Email;
+            if (clientName) {
+              clientName.innerText =
+                successResponse?.data[0]?.Client_Name?.name ?? "";
+            }
+            const primarySigner =
+              successResponse?.data[0]?.Primary_Signer?.id || null;
+            ZOHO.RECRUIT.API.getRelatedRecord({
+              Entity: "Clients",
+              RecordID: successResponse?.data[0]?.Client_Name?.id,
+              RelatedList: "Contacts",
+            }).then(
+              function (successResponse) {
+                if (primarySigner !== null) {
+                  filterData = successResponse.data.filter((item) => {
+                    return primarySigner !== item.id;
+                  });
+                }
+                // console.log(successResponse.data);
+              },
+              function (errorResponse) {}
+            );
+            // console.log("Data: ",successResponse?.data)
+            companyName = successResponse?.data[0]?.Company_Name;
+            document.getElementById("compName").innerText = companyName;
+
+            document.getElementById("job-title-2").innerText =
+              successResponse?.data[0]?.Job_Opening_Name;
+            document.getElementById("client-name-2").innerText =
+              successResponse?.data[0]?.Client_Name?.name;
+            document.getElementById("full-part-time-2").innerText =
+              successResponse?.data[0]?.Full_Part_Time || "Full Time";
+            clientNameEdit = successResponse?.data[0]?.Client_Name?.name;
+            document.getElementById("vaName").innerText =
+              successResponse?.data[0]?.Candidate?.name;
+            document.getElementById("compName").innerText =
+              successResponse?.data[0]?.Company_Name;
+            // document.getElementById("comp_Name").value = successResponse?.data[0]?.Company_Name || "";
+            VPName = successResponse?.data[0]?.Candidate?.name;
+            console.log("VPName: ", VPName);
+            document.getElementById(
+              "hiredHeader"
+            ).innerText = `${VPName} Hired Details`;
+            document.getElementById("vaPosition").innerText =
+              successResponse?.data[0]?.VA_Position;
+            document.getElementById("candidateEmail").innerText =
+              successResponse?.data[0]?.Candidate_Email;
+            document.getElementById("candidatePhone").innerText =
+              successResponse?.data[0]?.Candidate_Phone;
+            document.getElementById("candidateAddress").innerText =
+              successResponse?.data[0]?.Candidate_Address;
+            document.getElementById("candidateCountry").innerText =
+              successResponse?.data[0]?.Candidate_Country;
+            document.getElementById("serviceCommencementDate1").innerText =
+              successResponse?.data[0]?.Service_Commencement_Date;
+            document.getElementById("servicesToBePerformed").innerText =
+              successResponse?.data[0]?.Services_to_be_Performed;
+            document.getElementById("serviceHours1").innerText =
+              successResponse?.data[0]?.Service_Hours;
+            document.getElementById("candidateMonthlyRate1").innerText =
+              successResponse?.data[0]?.Service_Fees;
+            document.getElementById("clientBillingRate1").innerText =
+              successResponse?.data[0]?.Client_Billing_Rate;
+            engagementAgreementId =
+              successResponse?.data[0]?.Engagement_Contract_ID;
+            vpAgreementId = successResponse?.data[0]?.Candidate_Contract_ID;
+            clientAgreementId = successResponse?.data[0]?.Client_Contract_ID;
+            vpPosition = successResponse?.data[0]?.VA_Position;
+            hireDate = successResponse?.data[0]?.Hire_Date;
+            serviceCommencementDate =
+              successResponse?.data[0]?.Service_Commencement_Date;
+            servicesPerformed =
+              successResponse?.data[0]?.Services_to_be_Performed;
+            serviceHours = successResponse?.data[0]?.Service_Hours;
+            vpMonthlyRate = successResponse?.data[0]?.Service_Fees;
+            clientBillingRate = successResponse?.data[0]?.Client_Billing_Rate;
+            candidateId = successResponse?.data[0]?.Candidate?.id;
+            if (engagementAgreementId != null) {
+              document
+                .getElementById("voidEngagementAgreement")
+                .classList.remove("d-none");
+            } else {
+              document
+                .getElementById("sendEngagementAgreement")
+                .classList.remove("d-none");
+            }
+            if (vpAgreementId != null) {
+              document
+                .getElementById("voidVPAgreement")
+                .classList.remove("d-none");
+              document
+                .getElementById("createCandidateAgreement")
+                .classList.add("d-none");
+            }
+            if (clientAgreementId != null) {
+              document
+                .getElementById("voidClientAgreement")
+                .classList.remove("d-none");
+              document
+                .getElementById("createClientAgreement")
+                .classList.add("d-none");
+            }
+            engagementFee = successResponse?.data[0]?.Engagement_Fee;
+            jobTitleEdit = successResponse?.data[0]?.Job_Opening_Name;
+            fullPartTime = successResponse?.data[0]?.Full_Part_Time;
+            billingStreet = successResponse?.data[0]?.Street;
+            billingZipCode = successResponse?.data[0]?.Single_Line_35;
+            billingState = successResponse?.data[0]?.Single_Line_34;
+            billingCity = successResponse?.data[0]?.Single_Line_33;
+            document.getElementById("billing-zip-code").innerText =
+              billingZipCode;
+            document.getElementById("billing-state").innerText = billingState;
+            document.getElementById("billing-city").innerText = billingCity;
+            document.getElementById("billing-street").innerText = billingStreet;
+            const widgetUnHired = document.getElementById("widgetUnhired");
+            const widgetHired = document.getElementById("widgetHired");
+            const hire = successResponse?.data[0]?.Hired;
+            if (hire) {
+              widgetUnHired.classList.add("d-none");
+              widgetHired.classList.remove("d-none");
+            } else {
+              widgetUnHired.classList.remove("d-none");
+              widgetHired.classList.add("d-none");
+            }
+            candidateEmailFromJob = successResponse?.data[0]?.Candidate_Email;
+            candidatePhoneFromJob = successResponse?.data[0]?.Candidate_Phone;
+
+            // Check VP Evaluation status and update button states
+            if (hire && candidateId) {
+              checkVPEvaluationStatus(candidateId, id);
+            }
+          },
+          function (errorResponse) {}
+        );
+        var all_associated_candidates = [];
+
+        // Initialize candidate data variables
+        var finalCandidatesResponse = null;
+        var candidatesLoaded = false;
+
+        // Function to load all candidates (moved from initial load to improve performance)
+        async function loadAllCandidates() {
+          try {
+            if (candidatesLoaded) {
+              return; // Already loaded, don't fetch again
+            }
+
+            // Disable search during loading
+            const searchField = document.getElementById("searchField");
+            const crossBtn = document.getElementById("crossBtn");
+            if (searchField) searchField.disabled = true;
+            if (crossBtn) crossBtn.disabled = true;
+
+            // Show loading indicator
+            const table = $("#example").DataTable();
+            table.clear();
+            // Add loading row with proper DataTables format
+            table.row
+              .add([
+                '<div class="text-center w-100" style="grid-column: 1 / -1;">🔄 Loading candidates...</div>',
+                "",
+                "",
+                "",
+                "",
+              ])
+              .draw();
+
+            console.log("Starting to fetch all candidates with pagination...");
+            var allCandidatesData = [];
+            var page = 1;
+            var allCandidatesResponse;
+            var isFirstBatch = true;
+
+            do {
+              console.log(`Fetching page ${page} of candidates...`);
+
+              allCandidatesResponse = await ZOHO.RECRUIT.API.getAllRecords({
+                Entity: "Candidates",
+                page: page,
+                per_page: 200, // Maximum allowed per page
+              });
+
+              console.log(`Page ${page} response:`, allCandidatesResponse);
+              console.log(
+                `Page ${page} candidates count:`,
+                allCandidatesResponse?.data?.length || 0
+              );
+              console.log(
+                `More records available:`,
+                allCandidatesResponse?.info?.more_records
+              );
+
+              // Add current page data to our collection
+              if (
+                allCandidatesResponse.data &&
+                allCandidatesResponse.data.length > 0
+              ) {
+                allCandidatesData = allCandidatesData.concat(
+                  allCandidatesResponse.data
+                );
+
+                // Clear loading message on first batch
+                if (isFirstBatch) {
+                  table.clear();
+                  isFirstBatch = false;
+                }
+
+                // Add candidates from this page immediately to the table
+                const candidateRows = [];
+                allCandidatesResponse.data.forEach((candidate) => {
+                  if (
+                    !associated_candidates.includes(parseInt(candidate.id)) &&
+                    !candidate.Hired_Candidate
+                  ) {
+                    const candidateName =
+                      candidate.Full_Name ||
+                      `${candidate.First_Name} ${candidate.Last_Name}`;
+                    const candidatePhone =
+                      candidate.Phone || candidate.Mobile || "N/A";
+                    const englishLevel = candidate.Level_of_English || "N/A";
+                    const positionSummary = candidate.Position_Summary || "N/A";
+
+                    // Use proper DataTables array format
+                    candidateRows.push([
+                      `<input type="checkbox" class="candidateCheckbox associatedCheckboxAdd" data-id="${candidate.id}">`,
+                      `<a href="#" class="candidate-details" data-id="${candidate.id}">${candidateName}</a>`,
+                      englishLevel,
+                      positionSummary,
+                      candidatePhone,
+                    ]);
+                  }
+                });
+
+                // Add all rows from this page at once
+                table.rows.add(candidateRows).draw();
+              }
+
+              page++;
+            } while (allCandidatesResponse?.info?.more_records === true);
+
+            console.log(
+              "Finished fetching all candidates. Total count:",
+              allCandidatesData.length
+            );
+
+            // Create a combined response object similar to the original
+            finalCandidatesResponse = {
+              data: allCandidatesData,
+              info: {
+                total_count: allCandidatesData.length,
+                fetched_pages: page - 1,
+              },
+            };
+
+            // Re-enable search functionality
+            if (searchField) searchField.disabled = false;
+            if (crossBtn) crossBtn.disabled = false;
+
+            // Mark candidates as loaded
+            candidatesLoaded = true;
+          } catch (error) {
+            console.error("Error fetching candidates data", error);
+
+            // Re-enable search on error
+            const searchField = document.getElementById("searchField");
+            const crossBtn = document.getElementById("crossBtn");
+            if (searchField) searchField.disabled = false;
+            if (crossBtn) crossBtn.disabled = false;
+
+            // Show error message in table
+            const table = $("#example").DataTable();
+            table.clear();
+            table.row
+              .add([
+                '<div class="text-danger text-center w-100">❌ Error loading candidates. Please try again.</div>',
+                "",
+                "",
+                "",
+                "",
+              ])
+              .draw();
+          }
+        }
+
+        try {
+          // Get the associated candidates
+          var associated_candidates = [];
+          const assatedCandidateTableContainer = document.querySelector(
+            "#associatedCandidates"
+          );
+          try {
+            const assatedCandidateTable = document.querySelector(
+              "#assatedCandidateTable tbody"
+            );
+
+            // var successData = await ZOHO.RECRUIT.CONNECTION.invoke(
+            //   "zoho_recruit_conn",
+            //   {
+            //     url: `https://recruit.zoho.com/recruit/v2/Job_Openings/${id}/associate`,
+            //     method: "GET",
+            //   }
+            // );
+
+            const associate_candidate_url = `https://recruit.zoho.com/recruit/v2/functions/Get_Associated_Candidates_of_Job/actions/execute?auth_type=apikey&zapikey=1003.e05d6af5cb19406b13ac232b1adc64e3.d06489ae2029c3ff1043a144724ca28b&Job_id=${id}`;
+            let associate_candidate_postBody = {
+              data: [{ Job_id: id }],
+            };
+            let associate_candidate_postRequest = {
+              url: associate_candidate_url,
+              body: associate_candidate_postBody,
+            };
+
+            // API Request to fetch associated candidates
+            const associatedSuccessData = await ZOHO.RECRUIT.HTTP.post(
+              associate_candidate_postRequest
+            );
+            const allSuccessData = JSON.parse(associatedSuccessData);
+
+            // Parse the output field which is a stringified JSON
+            const successData = JSON.parse(allSuccessData.details.output);
+
+            // Check if the response is successful
+            if (
+              allSuccessData.code === "success" &&
+              successData.data &&
+              successData.data.length > 0
+            ) {
+              successData.data.forEach((candidate) => {
+                console.log("candidate", candidate);
+                const candidateName =
+                  candidate.Full_Name ||
+                  `${candidate.First_Name} ${candidate.Last_Name}`;
+
+                vpEvaluationName = candidateName;
+                const candidateEmail = candidate.Email || "N/A";
+                const candidatePhone = candidate.Mobile || "N/A";
+                associated_candidates.push(parseInt(candidate.id));
+
+                const candidateInfo = {
+                  jobId: id,
+                  candidateID: candidate.id,
+                  name: candidateName,
+                  email: candidateEmail,
+                  phone: candidatePhone,
+                  street: candidate.Candidate_Street || "",
+                  city: candidate.Candidate_City || "",
+                  state: candidate.Candidate_State_Province || "",
+                  zip: candidate.Candidate_Zip_Postal_Code || "",
+                  country: candidate.Candidate_Country || "",
+                };
+                all_associated_candidates.push(candidateInfo);
+
+                const row = document.createElement("tr");
+                const selectBox = candidate.Is_Attachment_Present
+                  ? `<input type="checkbox" class="candidateCheckbox associatedCheckbox" data-id="${candidate.id}">`
+                  : `<div class="no-resume-box" title="No resume attached to this candidate"></div>`;
+
+                row.innerHTML = `
+        <td>${selectBox}</td>
+        <td>${candidateName}</td>
+        <td>${candidateEmail}</td>
+        <td>${candidatePhone}</td>
+    `;
+                assatedCandidateTable.appendChild(row);
+              });
+            }
+          } catch (error) {
+            const widgetUnHired = document.getElementById("widgetUnhired");
+            widgetUnHired.classList.remove("d-none");
+            assatedCandidateTableContainer.innerHTML = `
+          <div class="no-candidates-message">
+              <p>No Candidates Associated to this Job Yet</p>
+          </div>
+      `;
+          }
+          // Check selection state for associated candidates and enable or disable the "Hire" button
+          const hireBtn = document.getElementById("hireBtn");
+          const sendEmailBtn = document.getElementById("sendEmailBtn");
+
+          document
+            .querySelectorAll(".associatedCheckbox")
+            .forEach((checkbox) => {
+              checkbox.addEventListener("change", () => {
+                const selectedAssociated = document.querySelectorAll(
+                  ".associatedCheckbox:checked"
+                );
+                hireBtn.disabled = selectedAssociated.length !== 1;
+                sendEmailBtn.disabled = selectedAssociated.length === 0;
+              });
+            });
+        } catch (mainError) {
+          console.error("Error in main initialization:", mainError);
+        }
+
+        // Set up candidate details click listener
+        document.addEventListener("click", function (e) {
+          if (e.target.classList.contains("candidate-details")) {
+            e.preventDefault();
+            const candidateId = e.target.getAttribute("data-id");
+
+            // Find candidate in existing data
+            if (finalCandidatesResponse && finalCandidatesResponse.data) {
+              const candidate = finalCandidatesResponse.data.find(
+                (c) => c.id === candidateId
+              );
+
+              if (candidate) {
+                const candidateName =
+                  candidate.Full_Name ||
+                  `${candidate.First_Name} ${candidate.Last_Name}`;
+                const candidatePhone = candidate.Mobile || "N/A";
+                const candidateEmail = candidate.Email || "N/A";
+
+                Swal.fire({
+                  title: "Candidate Details",
+                  html: `
+                                <div class="candidate-details-container">
+                                    <div class="basic-info">
+                                        <p><strong>Name:</strong> ${candidateName}</p>
+                                        <p><strong>Email:</strong> ${candidateEmail}</p>
+                                        <p><strong>Phone:</strong> ${candidatePhone}</p>
+                                    </div>
+                                    
+                                    <div class="candidate-info-section">
+                                        <h4>Candidate Information</h4>
+                                        <div class="row">
+                                            <div class="col">
+                                                <p><strong>Virtual Experience:</strong> ${
+                                                  candidate.Virtual_Experience ||
+                                                  "N/A"
+                                                }</p>
+                                                <p><strong>U.S. Experience:</strong> ${
+                                                  candidate.U_S_Experience ||
+                                                  "N/A"
+                                                }</p>
+                                                <p><strong>Availability:</strong> ${
+                                                  candidate.Availability ||
+                                                  "N/A"
+                                                }</p>
+                                                <p><strong>Technology & Experience:</strong> ${
+                                                  candidate.Technology_and_Experience ||
+                                                  "N/A"
+                                                }</p>
+                                                <p><strong>Level of English:</strong> ${
+                                                  candidate.Level_of_English ||
+                                                  "N/A"
+                                                }</p>
+                                                <p><strong>Languages:</strong> ${
+                                                  candidate.Languages || "N/A"
+                                                }</p>
+                                                <p><strong>Computer:</strong> ${
+                                                  candidate.Computer || "N/A"
+                                                }</p>
+                                                <p><strong>Fun Fact:</strong> ${
+                                                  candidate.Fun_Fact || "N/A"
+                                                }</p>
+                                                <p><strong>Why Looking:</strong> ${
+                                                  candidate.Why_looking || "N/A"
+                                                }</p>
+                                            </div>
+                                            <div class="col">
+                                                <p><strong>Experience in Years:</strong> ${
+                                                  candidate.Experience_in_Years ||
+                                                  "N/A"
+                                                }</p>
+                                                <p><strong>Current Employer:</strong> ${
+                                                  candidate.Current_Employer ||
+                                                  "N/A"
+                                                }</p>
+                                                <p><strong>Current Job Title:</strong> ${
+                                                  candidate.Current_Job_Title ||
+                                                  "N/A"
+                                                }</p>
+                                                <p><strong>Highest Qualification:</strong> ${
+                                                  candidate.Highest_Qualification_Held ||
+                                                  "N/A"
+                                                }</p>
+                                                <p><strong>Current Salary (USD):</strong> ${
+                                                  candidate.Current_Monthly_Salary_in_USD ||
+                                                  "N/A"
+                                                }</p>
+                                                <p><strong>Expected Salary (USD):</strong> ${
+                                                  candidate.Expexted_Monthly_Salary_in_USD ||
+                                                  "N/A"
+                                                }</p>
+                                                <p><strong>Skill Set:</strong> ${
+                                                  candidate.Skill_Set || "N/A"
+                                                }</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="professional-details-section">
+                                        <h4>Professional Details</h4>
+                                        <div class="row">
+                                            <div class="col">
+                                                <p><strong>Position Summary:</strong> ${
+                                                  candidate.Position_Summary ||
+                                                  "N/A"
+                                                }</p>
+                                                <p><strong>Email Summary:</strong> ${
+                                                  candidate.Email_Summary ||
+                                                  "N/A"
+                                                }</p>
+                                                <p><strong>Practice Areas:</strong> ${
+                                                  candidate.Practice_Areas ||
+                                                  "N/A"
+                                                }</p>
+                                                <p><strong>Compensation:</strong> ${
+                                                  candidate.Compensation ||
+                                                  "N/A"
+                                                }</p>
+                                                <p><strong>Full Time Status:</strong> ${
+                                                  candidate.Full_Time_Status ||
+                                                  "N/A"
+                                                }</p>
+                                                <p><strong>Personal Personality:</strong> ${
+                                                  candidate.Personal_Personality ||
+                                                  "N/A"
+                                                }</p>
+                                                <p><strong>Concerns:</strong> ${
+                                                  candidate.Concerns || "N/A"
+                                                }</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `,
+                  confirmButtonText: "OK",
+                  showCloseButton: true,
+                  width: "1000px",
+                });
+              }
+            }
+          }
+        });
+
+        // Set up search functionality
+        const searchField = document.getElementById("searchField");
+        if (searchField) {
+          searchField.addEventListener("input", function () {
+            const searchValue = this.value.toLowerCase();
+            const table = $("#example").DataTable();
+            table.search(searchValue).draw();
+          });
+        }
+
+        // Set up cross button functionality for search clear
+        const crossBtn = document.getElementById("crossBtn");
+        if (crossBtn) {
+          crossBtn.addEventListener("click", function () {
+            document.getElementById("searchField").value = "";
+            const table = $("#example").DataTable();
+            table.search("").draw();
+
+            // Enhanced clear functionality when data is loaded
+            if (finalCandidatesResponse && finalCandidatesResponse.data) {
+              const filteredData = finalCandidatesResponse.data.filter(
+                (candidate) =>
+                  !associated_candidates.includes(parseInt(candidate.id))
+              );
+              const tableData = filteredData.map((candidate) => {
+                const candidateName =
+                  candidate.Full_Name ||
+                  `${candidate.First_Name} ${candidate.Last_Name}`;
+                const candidatePhone =
+                  candidate.Phone || candidate.Mobile || "N/A";
+                const englishLevel = candidate.Level_of_English || "N/A";
+                const positionSummary = candidate.Position_Summary || "N/A";
+                const isSelected =
+                  selectedCandidates && selectedCandidates.has
+                    ? selectedCandidates.has(candidate.id)
+                    : false;
+                return [
+                  `<input type="checkbox" class="candidateCheckbox associatedCheckbox" data-id="${
+                    candidate.id
+                  }" ${isSelected ? "checked" : ""}>`,
+                  candidateName,
+                  englishLevel,
+                  positionSummary,
+                  candidatePhone,
+                ];
+              });
+
+              // Clear and redraw the DataTable
+              const table = $("#example").DataTable();
+              table.clear();
+              table.rows.add(tableData);
+              table.draw();
+
+              // Disable save changes button if no candidates are selected
+              const saveChangesBtn = document.getElementById("saveChangesBtn");
+              if (
+                saveChangesBtn &&
+                selectedCandidates &&
+                selectedCandidates.size !== undefined
+              ) {
+                saveChangesBtn.disabled = selectedCandidates.size === 0;
+              }
+            }
+          });
+        }
+
+        // Button enabling is now handled earlier to improve responsiveness
+        // Get button references for event listeners
+        let associateBtn = document.getElementById("associateBtn");
+
+        // Toggle the visibility of non-associated candidates on button click
+        let nonAssociatedCandidates = document.getElementById(
+          "non-associatedCandidates"
+        );
+
+        associateBtn.addEventListener("click", async function () {
+          // Show loading state
+          const originalText = this.textContent;
+          this.textContent = "Loading Candidates...";
+          this.style.pointerEvents = "none";
+
+          // Load candidates on first click if not already loaded
+          await loadAllCandidates();
+
+          // Restore button state
+          this.textContent = originalText;
+          this.style.pointerEvents = "auto";
+
+          nonAssociatedCandidates.style.display === "none" ? "block" : "none";
+          nonAssociatedCandidates.style.display =
+            nonAssociatedCandidates.style.display === "none" ? "block" : "none";
+        });
+
+        // voidEngagementAgreement
+
+        document
+          .getElementById("voidEngagementAgreement")
+          .addEventListener("click", async function () {
+            document
+              .getElementById("loadingEngagementAgreement")
+              .classList.remove("d-none");
+            document
+              .getElementById("voidEngagementAgreement")
+              .classList.add("d-none");
+            document
+              .getElementById("createCandidateAgreement")
+              .classList.remove("d-none");
+            ZOHO.RECRUIT.API.getRecord({
+              Entity: "Job_Openings",
+              RecordID: id,
+            }).then(
+              async function (successResponse) {
+                // console.log("Get Res",successResponse.data)
+                const contract_id =
+                  successResponse.data[0].Engagement_Contract_ID;
+                // console.log(contract_id);
+                const url = `https://recruit.zoho.com/recruit/v2/functions/Aggrement_Delete_Contract/actions/execute?auth_type=apikey&zapikey=1003.e05d6af5cb19406b13ac232b1adc64e3.d06489ae2029c3ff1043a144724ca28b&Job_ID=${id}&contract_id=${contract_id}`;
+
+                let postBody = {
+                  data: [{ Job_ID: id }, { contract_id: contract_id }],
+                };
+                let postRequest = {
+                  url: url,
+                  body: postBody,
+                };
+                let responses = await ZOHO.RECRUIT.HTTP.post(postRequest);
+                paredResponse = JSON.parse(responses);
+                if (paredResponse.code == "success") {
+                  document
+                    .getElementById("loadingEngagementAgreement")
+                    .classList.add("d-none");
+                  document
+                    .getElementById("createVpAgreement")
+                    .classList.add("d-none");
+                  document
+                    .getElementById("sendEngagementAgreement")
+                    .classList.remove("d-none");
+                  Swal.fire({
+                    title: "Success!",
+                    text: "Engagement Document Voided.",
+                    icon: "success",
+                    confirmButtonText: "OK",
+                  });
+                } else {
+                  document
+                    .getElementById("loadingEngagementAgreement")
+                    .classList.add("d-none");
+                  Swal.fire({
+                    title: "Error!",
+                    text: "Something went wrong. Please try again.",
+                    icon: "error",
+                    confirmButtonText: "Retry",
+                  });
+                }
+              },
+              function (errorResponse) {
+                console.error("Error fetching record:", errorResponse);
+              }
+            );
+          });
+
+        // voidVPAgreement
+        document
+          .getElementById("voidVPAgreement")
+          .addEventListener("click", async function () {
+            Swal.fire({
+              title: "Void VP Agreement",
+              text: "Are you sure you want to void this VP Agreement?",
+              icon: "warning",
+              showCancelButton: true,
+              confirmButtonText: "Void",
+              cancelButtonText: "Cancel",
+              customClass: {
+                confirmButton: "btn btn-danger",
+                cancelButton: "btn btn-secondary",
+              },
+              buttonsStyling: false,
+              reverseButtons: true,
+            }).then(async (result) => {
+              if (result.isConfirmed) {
+                // Ask for void reason first
+                Swal.fire({
+                  title: "Reason for Voiding VP Agreement",
+                  input: "textarea",
+                  inputLabel:
+                    "Please provide a reason for voiding this VP Agreement:",
+                  inputPlaceholder: "Enter your reason here...",
+                  inputAttributes: {
+                    "aria-label": "Type your reason here",
+                    style: "min-height: 100px;",
+                  },
+                  showCancelButton: true,
+                  confirmButtonText: "Continue with Void",
+                  cancelButtonText: "Cancel",
+                  customClass: {
+                    confirmButton: "btn btn-danger",
+                    cancelButton: "btn btn-secondary",
+                  },
+                  buttonsStyling: false,
+                  inputValidator: (value) => {
+                    if (!value || value.trim() === "") {
+                      return "You need to provide a reason for voiding!";
+                    }
+                  },
+                }).then(async (reasonResult) => {
+                  if (reasonResult.isConfirmed && reasonResult.value) {
+                    const voidReason = reasonResult.value.trim();
+
+                    // Void functionality with reason
+                    document
+                      .getElementById("voidVPAgreement")
+                      .classList.add("d-none");
+                    document
+                      .getElementById("createVpAgreement")
+                      .classList.remove("d-none");
+
+                    ZOHO.RECRUIT.API.getRecord({
+                      Entity: "Job_Openings",
+                      RecordID: id,
+                    }).then(
+                      async function (successResponse) {
+                        const contract_id =
+                          successResponse.data[0].Candidate_Contract_ID;
+
+                        // First update the contract with void reason
+                        ZOHO.RECRUIT.API.updateRecord({
+                          Entity: "Contracts",
+                          APIData: {
+                            id: contract_id,
+                            Void_Reason: voidReason,
+                          },
+                          Trigger: ["workflow"],
+                        }).then(
+                          async function (updateResponse) {
+                            console.log(
+                              "Contract updated with void reason:",
+                              updateResponse
+                            );
+
+                            // Wait 2 seconds before calling the delete API to ensure the update is processed
+                            setTimeout(async () => {
+                              // Then proceed with the void API call
+                              const url = `https://recruit.zoho.com/recruit/v2/functions/Aggrement_Delete_Contract/actions/execute?auth_type=apikey&zapikey=1003.e05d6af5cb19406b13ac232b1adc64e3.d06489ae2029c3ff1043a144724ca28b&Job_ID=${id}&contract_id=${contract_id}`;
+                              let postBody = {
+                                data: [
+                                  { Job_ID: id },
+                                  { contract_id: contract_id },
+                                ],
+                              };
+                              let postRequest = {
+                                url: url,
+                                body: postBody,
+                              };
+                              let responses = await ZOHO.RECRUIT.HTTP.post(
+                                postRequest
+                              );
+                              paredResponse = JSON.parse(responses);
+                              if (paredResponse.code == "success") {
+                                document
+                                  .getElementById("createVpAgreement")
+                                  .classList.add("d-none");
+                                document
+                                  .getElementById("sendEngagementAgreement")
+                                  .classList.remove("d-none");
+                                Swal.fire({
+                                  title: "Success!",
+                                  text: "VP Agreement has been voided with reason recorded.",
+                                  icon: "success",
+                                  confirmButtonText: "OK",
+                                  customClass: {
+                                    confirmButton: "btn btn-success",
+                                  },
+                                  buttonsStyling: false,
+                                });
+                              } else {
+                                Swal.fire({
+                                  title: "Error!",
+                                  text: "Something went wrong while voiding the agreement. Please try again.",
+                                  icon: "error",
+                                  confirmButtonText: "Retry",
+                                  customClass: {
+                                    confirmButton: "btn btn-danger",
+                                  },
+                                  buttonsStyling: false,
+                                });
+                              }
+                            }, 2000); // 2 second delay
+                          },
+                          function (updateErrorResponse) {
+                            console.error(
+                              "Error updating contract with void reason:",
+                              updateErrorResponse
+                            );
+                            Swal.fire({
+                              title: "Error!",
+                              text: "Failed to update contract with void reason. Please try again.",
+                              icon: "error",
+                              confirmButtonText: "Retry",
+                              customClass: {
+                                confirmButton: "btn btn-danger",
+                              },
+                              buttonsStyling: false,
+                            });
+                          }
+                        );
+                      },
+                      function (errorResponse) {
+                        console.error("Error fetching record:", errorResponse);
+                      }
+                    );
+                  }
+                });
+              }
+            });
+          });
+
+        // voidClientAgreement
+        document
+          .getElementById("voidClientAgreement")
+          .addEventListener("click", async function () {
+            Swal.fire({
+              title: "Void Client Agreement",
+              text: "Are you sure you want to void this Client Agreement?",
+              icon: "warning",
+              showCancelButton: true,
+              confirmButtonText: "Void",
+              cancelButtonText: "Cancel",
+              customClass: {
+                confirmButton: "btn btn-danger",
+                cancelButton: "btn btn-secondary",
+              },
+              buttonsStyling: false,
+              reverseButtons: true,
+            }).then(async (result) => {
+              if (result.isConfirmed) {
+                // Ask for void reason first
+                Swal.fire({
+                  title: "Reason for Voiding Client Agreement",
+                  input: "textarea",
+                  inputLabel:
+                    "Please provide a reason for voiding this Client Agreement:",
+                  inputPlaceholder: "Enter your reason here...",
+                  inputAttributes: {
+                    "aria-label": "Type your reason here",
+                    style: "min-height: 100px;",
+                  },
+                  showCancelButton: true,
+                  confirmButtonText: "Continue with Void",
+                  cancelButtonText: "Cancel",
+                  customClass: {
+                    confirmButton: "btn btn-danger",
+                    cancelButton: "btn btn-secondary",
+                  },
+                  buttonsStyling: false,
+                  inputValidator: (value) => {
+                    if (!value || value.trim() === "") {
+                      return "You need to provide a reason for voiding!";
+                    }
+                  },
+                }).then(async (reasonResult) => {
+                  if (reasonResult.isConfirmed && reasonResult.value) {
+                    const voidReason = reasonResult.value.trim();
+
+                    // Void functionality with reason
+                    document
+                      .getElementById("voidClientAgreement")
+                      .classList.add("d-none");
+                    document
+                      .getElementById("loadingCreateClientAgreement")
+                      .classList.remove("d-none");
+                    document
+                      .getElementById("loadingCreateClientAgreement")
+                      .classList.add("btn-danger");
+
+                    ZOHO.RECRUIT.API.getRecord({
+                      Entity: "Job_Openings",
+                      RecordID: id,
+                    }).then(
+                      async function (successResponse) {
+                        const contract_id =
+                          successResponse.data[0].Client_Contract_ID;
+
+                        // First update the contract with void reason
+                        ZOHO.RECRUIT.API.updateRecord({
+                          Entity: "Contracts",
+                          APIData: {
+                            id: contract_id,
+                            Void_Reason: voidReason,
+                          },
+                          Trigger: ["workflow"],
+                        }).then(
+                          async function (updateResponse) {
+                            console.log(
+                              "Contract updated with void reason:",
+                              updateResponse
+                            );
+
+                            // Wait 1 second before calling the delete API to ensure the update is processed
+                            setTimeout(async () => {
+                              // Then proceed with the void API call
+                              const url = `https://recruit.zoho.com/recruit/v2/functions/Aggrement_Delete_Contract/actions/execute?auth_type=apikey&zapikey=1003.e05d6af5cb19406b13ac232b1adc64e3.d06489ae2029c3ff1043a144724ca28b&Job_ID=${id}&contract_id=${contract_id}`;
+
+                              let postBody = {
+                                data: [
+                                  { Job_ID: id },
+                                  { contract_id: contract_id },
+                                ],
+                              };
+                              let postRequest = {
+                                url: url,
+                                body: postBody,
+                              };
+                              let responses = await ZOHO.RECRUIT.HTTP.post(
+                                postRequest
+                              );
+                              paredResponse = JSON.parse(responses);
+                              if (paredResponse.code == "success") {
+                                document
+                                  .getElementById(
+                                    "loadingCreateClientAgreement"
+                                  )
+                                  .classList.add("d-none");
+                                document
+                                  .getElementById("voidClientAgreement")
+                                  .classList.add("d-none");
+                                document
+                                  .getElementById("createClientAgreement")
+                                  .classList.remove("d-none");
+                                Swal.fire({
+                                  title: "Success!",
+                                  text: "Client Agreement has been voided with reason recorded.",
+                                  icon: "success",
+                                  confirmButtonText: "OK",
+                                  customClass: {
+                                    confirmButton: "btn btn-success",
+                                  },
+                                  buttonsStyling: false,
+                                });
+                              } else {
+                                Swal.fire({
+                                  title: "Error!",
+                                  text: "Something went wrong while voiding the agreement. Please try again.",
+                                  icon: "error",
+                                  confirmButtonText: "Retry",
+                                  customClass: {
+                                    confirmButton: "btn btn-danger",
+                                  },
+                                  buttonsStyling: false,
+                                });
+                              }
+                            }, 1000); // 1 second delay
+                          },
+                          function (updateErrorResponse) {
+                            console.error(
+                              "Error updating contract with void reason:",
+                              updateErrorResponse
+                            );
+                            Swal.fire({
+                              title: "Error!",
+                              text: "Failed to update contract with void reason. Please try again.",
+                              icon: "error",
+                              confirmButtonText: "Retry",
+                              customClass: {
+                                confirmButton: "btn btn-danger",
+                              },
+                              buttonsStyling: false,
+                            });
+                          }
+                        );
+                      },
+                      function (errorResponse) {
+                        console.error("Error fetching record:", errorResponse);
+                      }
+                    );
+                  }
+                });
+              }
+            });
+
+            const secondSignerId = document.getElementById("secondSigner");
+          });
+        // sendEngagementAgreement
+
+        document
+          .getElementById("sendEngagementAgreement")
+          .addEventListener("click", async function () {
+            Swal.fire({
+              title: "Fields Required for Engagement Agreement",
+              html: `
+                  <form id="engagementForm"> 
+                    <div class="mb-3">
+                      <label for="engagementFee" class="form-label w-100 d-flex justify-content-start">
+                        Engagement Fee <span class="text-danger">*</span>
+                      </label>
+                      <input required type="number" step="0.01" class="form-control" id="engagementFee" name="engagementFee" />
+                    </div>
+                    <div class="mb-3">
+                      <label for="companyName" class="form-label w-100 d-flex justify-content-start">
+                        Client Company Name (Legal Entity): <span class="text-danger">*</span>
+                      </label>
+                      <input required type="text" class="form-control" id="companyName" name="companyName" />
+                    </div> 
+                    <div class="mb-3">
+                      <label for="billingStreet" class="form-label w-100 d-flex justify-content-start">
+                        Client Street Address <span class="text-danger">*</span>
+                      </label>
+                      <input required type="text" class="form-control" id="billingStreet" name="billingStreet" />
+                    </div>
+                    <div class="mb-3">
+                      <label for="billingCity" class="form-label w-100 d-flex justify-content-start">
+                        Client City <span class="text-danger">*</span>
+                      </label>
+                      <input required type="text" class="form-control" id="billingCity" name="billingCity" />
+                    </div>
+                    <div class="mb-3">
+                      <label for="billingState" class="form-label w-100 d-flex justify-content-start">
+                       Client State <span class="text-danger">*</span>
+                      </label>
+                      <input required type="text" class="form-control" id="billingState" name="billingState" />
+                    </div>
+                    <div class="mb-3">
+                      <label for="billingZipCode" class="form-label w-100 d-flex justify-content-start">
+                        Client Zip Code <span class="text-danger">*</span>
+                      </label>
+                      <input required type="text" class="form-control" id="billingZipCode" name="billingZipCode" />
+                    </div>
+                   <div class="mb-3">
+                      <label class="form-label w-100 d-flex justify-content-start">
+                        Agreement Type <span class="text-danger">*</span>
+                      </label>
+
+                        <div class="d-flex">
+                          <div class="form-check me-4">
+                            <input
+                              required
+                              type="radio"
+                              class="form-check-input"
+                              id="agreementTypeNormal"
+                              name="agreementType"
+                              value="Normal"
+                              checked
+                            />
+                            <label class="form-check-label" for="agreementTypeNormal">Normal</label>
+                          </div>
+
+                          <div class="form-check">
+                            <input
+                              required
+                              type="radio"
+                              class="form-check-input"
+                              id="agreementTypeFastTrack"
+                              name="agreementType"
+                              value="Fast Track"
+                            />
+                            <label class="form-check-label" for="agreementTypeFastTrack">Fast Track</label>
+                          </div>
+                        </div>
+                      </div>
+
+                      <button type="submit" id="submitButtonEngagement" class="btn btn-primary">
+                        Send Agreement
+                      </button>
+                    <button id="loadingSendEngagementAgreement" class="btn btn-success d-none w-100" type="button" disabled>
+                      <span
+                        class="spinner-border spinner-border-sm"
+                        role="status"
+                        aria-hidden="true"
+                      ></span>
+                      Loading...
+                    </button>
+                    <button type="button" id="cancelButton" class="btn btn-dark">No, cancel</button>
+                  </form>
+                  `,
+              // icon: "info",
+              customClass: {
+                icon: "custom-swal-icon",
+              },
+              showConfirmButton: false,
+              showCancelButton: false,
+              didRender: () => {
+                // Add event listener to the cancel button
+                document.getElementById("engagementFee").value = engagementFee;
+                document.getElementById("companyName").value = companyName;
+                // document.getElementById("jobTitle").value = jobTitleEdit;
+                document.getElementById("billingStreet").value = billingStreet;
+                document.getElementById("billingZipCode").value =
+                  billingZipCode;
+                document.getElementById("billingState").value = billingState;
+                document.getElementById("billingCity").value = billingCity;
+                document
+                  .getElementById("cancelButton")
+                  .addEventListener("click", () => {
+                    Swal.close();
+                  });
+
+                // Add event listener to the submit button
+                document
+                  .getElementById("engagementForm")
+                  .addEventListener("submit", async (e) => {
+                    e.preventDefault();
+                    // Get values from the form inputs
+                    const updatedCompanyName =
+                      document.getElementById("companyName").value;
+                    const engagementFee =
+                      document.getElementById("engagementFee").value;
+                    const billingStreetUpdated =
+                      document.getElementById("billingStreet").value;
+                    const billingCityUpdated =
+                      document.getElementById("billingCity").value;
+                    const billingStateUpdated =
+                      document.getElementById("billingState").value;
+                    const billingZipCodeUpdated =
+                      document.getElementById("billingZipCode").value;
+                    const agreementType = document.querySelector(
+                      'input[name="agreementType"]:checked'
+                    ).value;
+
+                    isFastTrack = agreementType === "Fast Track";
+                    const url = `https://recruit.zoho.com/recruit/v2/functions/Send_Engagement_Contract/actions/execute?auth_type=apikey&zapikey=1003.e05d6af5cb19406b13ac232b1adc64e3.d06489ae2029c3ff1043a144724ca28b&Job_ID=${id}&Is_Fast_Track=${isFastTrack}`;
+                    let postBody = {
+                      data: [{ Job_ID: id }],
+                    };
+                    let postRequest = {
+                      url: url,
+                      body: postBody,
+                    };
+                    document
+                      .getElementById("submitButtonEngagement")
+                      .classList.add("d-none");
+                    document
+                      .getElementById("loadingSendEngagementAgreement")
+                      .classList.remove("d-none");
+                    await updateJob(
+                      id,
+                      engagementFee,
+                      billingStreetUpdated,
+                      billingZipCodeUpdated,
+                      billingStateUpdated,
+                      billingCityUpdated,
+                      updatedCompanyName
+                    );
+                    const responses = await ZOHO.RECRUIT.HTTP.post(postRequest);
+                    const paredResponse = JSON.parse(responses);
+                    const parsedUrl = JSON.parse(
+                      paredResponse.details.userMessage[0]
+                    );
+
+                    // Check if there's a contract ID in the response and save it
+                    if (paredResponse.details.userMessage.length > 1) {
+                      try {
+                        const engagementContractData = JSON.parse(
+                          paredResponse.details.userMessage[1]
+                        );
+                        if (
+                          engagementContractData &&
+                          engagementContractData.Id
+                        ) {
+                          // Update job with engagement contract ID
+                          await ZOHO.RECRUIT.API.updateRecord({
+                            Entity: "Job_Openings",
+                            APIData: {
+                              id: id,
+                              Engagement_Contract_ID: engagementContractData.Id,
+                            },
+                            Trigger: ["workflow"],
+                          });
+                          console.log(
+                            "Engagement Contract ID saved:",
+                            engagementContractData.Id
+                          );
+                        }
+                      } catch (error) {
+                        console.log(
+                          "No engagement contract ID found in response or parsing error:",
+                          error
+                        );
+                      }
+                    }
+
+                    // console.log("Final", parsedUrl)
+                    window.open(parsedUrl.document_url, "_blank");
+                    Swal.close(); // Close the modal after submission
+                  });
+              },
+            });
+          });
+
+        // createCandidateAgreement
+
+        document
+          .getElementById("createCandidateAgreement")
+          .addEventListener("click", async function () {
+            document
+              .getElementById("createCandidateAgreement")
+              .classList.add("d-none");
+            document
+              .getElementById("createVpAgreement")
+              .classList.remove("d-none");
+            const url = `https://recruit.zoho.com/recruit/v2/functions/Dev_create_contract_agreement/actions/execute?auth_type=apikey&zapikey=1003.e05d6af5cb19406b13ac232b1adc64e3.d06489ae2029c3ff1043a144724ca28b&Job_ID=${id}`;
+            let postBody = {
+              data: [{ Job_ID: id }],
+            };
+            let postRequest = {
+              url: url,
+              body: postBody,
+            };
+            let responses = await ZOHO.RECRUIT.HTTP.post(postRequest);
+            const paredResponse = JSON.parse(responses);
+            const parsedUrl = JSON.parse(paredResponse.details.userMessage[1]);
+            const candidateAgreement = JSON.parse(
+              paredResponse.details.userMessage[2]
+            );
+            if (responses?.code !== "INVALID_DATA") {
+              Swal.fire({
+                title: "Success!",
+                text: "The operation was a.",
+                icon: "success",
+                confirmButtonText: "OK",
+              });
+              document
+                .getElementById("createVpAgreement")
+                .classList.add("d-none");
+              document
+                .getElementById("voidVPAgreement")
+                .classList.remove("d-none");
+              updateVPAgreementID(id, candidateAgreement.Id);
+              window.open(parsedUrl.document_url, "_blank");
+            } else {
+              Swal.fire({
+                title: "Error!",
+                text: "Something went wrong. Please try again.",
+                icon: "error",
+                confirmButtonText: "Retry",
+              });
+              document
+                .getElementById("createCandidateAgreement")
+                .classList.remove("d-none");
+              document
+                .getElementById("createVpAgreement")
+                .classList.add("d-none");
+            }
+          });
+
+        // sendJobReqFormtoClient
+
+        document
+          .getElementById("sendJobReqFormtoClient")
+          .addEventListener("click", async function () {
+            const loadingSendJobReqFormtoClient = document.getElementById(
+              "loadingSendJobReqFormtoClient"
+            );
+            const sendJobReqFormtoClient = document.getElementById(
+              "sendJobReqFormtoClient"
+            );
+            loadingSendJobReqFormtoClient.classList.remove("d-none");
+            sendJobReqFormtoClient.classList.add("d-none");
+            const url = `https://recruit.zoho.com/recruit/v2/functions/Dev_Send_Job_Requirement_Form/actions/execute?auth_type=apikey&zapikey=1003.e05d6af5cb19406b13ac232b1adc64e3.d06489ae2029c3ff1043a144724ca28b&job_id=${id}`;
+            let postBody = {
+              data: [{ job_id: id }],
+            };
+            let postRequest = {
+              url: url,
+              body: postBody,
+            };
+            let responses = await ZOHO.RECRUIT.HTTP.post(postRequest);
+            responses = JSON.parse(responses);
+            if (responses?.code !== "INVALID_DATA") {
+              loadingSendJobReqFormtoClient.classList.add("d-none");
+              sendJobReqFormtoClient.classList.remove("d-none");
+              Swal.fire({
+                title: "Success!",
+                text: "Job Request Form successfully sent to client.",
+                icon: "success",
+                confirmButtonText: "OK",
+              });
+            } else {
+              Swal.fire({
+                title: "Error!",
+                text: "Something went wrong. Please try again.",
+                icon: "error",
+                confirmButtonText: "Retry",
+              });
+            }
+          });
+        // updateJobSecondarySigner
+        async function updateJobSecondarySigner(jobId, secondSignerId) {
+          ZOHO.RECRUIT.API.updateRecord({
+            Entity: "Job_Openings",
+            APIData: {
+              id: jobId[0],
+              Secondary_Signer: secondSignerId,
+              // Client_Contract_ID: secondSignerId,
+            },
+            Trigger: ["workflow"],
+          }).then(
+            async function (successResponse) {
+              const url = `https://recruit.zoho.com/recruit/v2/functions/Dev_create_client_agreement/actions/execute?auth_type=apikey&zapikey=1003.e05d6af5cb19406b13ac232b1adc64e3.d06489ae2029c3ff1043a144724ca28b&Job_ID=${id}`;
+              let postBody = {
+                data: [{ Job_ID: id }],
+              };
+              let postRequest = {
+                url: url,
+                body: postBody,
+              };
+              let responses = await ZOHO.RECRUIT.HTTP.post(postRequest);
+              console.log("response: ", responses);
+              responses = JSON.parse(responses);
+              console.log("response22: ", responses);
+              if (responses?.code !== "INVALID_DATA") {
+                const parsedUrl = JSON.parse(responses.details.userMessage[0]);
+                console.log("response22: ", parsedUrl);
+                const clientAgreementIdData = JSON.parse(
+                  responses.details.userMessage[1]
+                );
+                console.log("response22: ", clientAgreementIdData);
+                var client_contract_id = clientAgreementIdData.Id;
+                console.log("Client::", clientAgreementIdData);
+                if (secondSignerId !== null) {
+                  window.open(parsedUrl.document_url, "_blank");
+                  res = await ZOHO.RECRUIT.API.updateRecord({
+                    Entity: "Job_Openings",
+                    APIData: {
+                      id: jobId[0],
+                      Client_Contract_ID: clientAgreementIdData.Id,
+                    },
+                    Trigger: ["workflow"],
+                  });
+                  console.log("response after update: ", res);
+                }
+                if (secondSignerId !== null) {
+                  document
+                    .getElementById("loadingCreateClientAgreement")
+                    .classList.add("d-none");
+                  document
+                    .getElementById("voidClientAgreement")
+                    .classList.remove("d-none");
+                  document
+                    .getElementById("createClientAgreement")
+                    .classList.add("d-none");
+                } else {
+                  document
+                    .getElementById("loadingCreateClientAgreement")
+                    .classList.add("d-none");
+                  document
+                    .getElementById("createClientAgreement")
+                    .classList.remove("d-none");
+                  document
+                    .getElementById("voidClientAgreement")
+                    .classList.add("d-none");
+                }
+
+                Swal.fire({
+                  title: "Success!",
+                  text: `${
+                    secondSignerId === null
+                      ? "Successfully Voided Client Agreement"
+                      : "Client Agreement has been successfully Created & Sent!"
+                  }`,
+                  icon: "success",
+                  confirmButtonText: "OK",
+                });
+              } else {
+                Swal.fire({
+                  title: "Error!",
+                  text: "Something went wrong. Please try again.",
+                  icon: "error",
+                  confirmButtonText: "Retry",
+                });
+              }
+            },
+            function (errorResponse) {
+              // console.log("Error", errorResponse);
+              Swal.fire({
+                icon: "error",
+                title: "Hiring Failed",
+                text: "There was an error hiring the candidate. Please try again.",
+              });
+            }
+          );
+        }
+
+        // createClientAgreement
+        document
+          .getElementById("createClientAgreement")
+          .addEventListener("click", async function () {
+            Swal.fire({
+              title: "Select Optional Secondary signer",
+              html: `
+                  <form id="clientAgreement">
+                    <div class="mb-3">
+                      <select id="secondSigner" class="form-select form-select-md mb-3" aria-label=".form-select-md example">
+                        <option selected value="">Select Secondary Signer</option>
+                      </select>
+                    <button type="submit" id="submitButtonAgreement" class="btn btn-success">Send Agreement</button>
+                    <button type="button" id="cancelButton" class="btn btn-dark">No, cancel</button>
+                  </form>
+                  `,
+              icon: "info",
+              showConfirmButton: false,
+              showCancelButton: false,
+              didRender: () => {
+                // Add event listener to the cancel button
+
+                document
+                  .getElementById("cancelButton")
+                  .addEventListener("click", () => {
+                    Swal.close();
+                  });
+
+                // Add event listener to the submit button
+                document
+                  .getElementById("clientAgreement")
+                  .addEventListener("submit", async (e) => {
+                    e.preventDefault();
+                    document
+                      .getElementById("createClientAgreement")
+                      .classList.add("d-none");
+                    document
+                      .getElementById("loadingCreateClientAgreement")
+                      .classList.remove("d-none");
+                    // Get values from the form inputs
+                    const secondSignerId =
+                      document.getElementById("secondSigner");
+                    updateJobSecondarySigner(id, secondSignerId.value);
+
+                    Swal.close(); // Close the modal after submission
+                  });
+                const secondSignerSelect =
+                  document.getElementById("secondSigner");
+                filterData &&
+                  filterData?.forEach((item) => {
+                    const option = document.createElement("option");
+                    option.value = item.id;
+                    option.textContent = item.Full_Name;
+                    secondSignerSelect.appendChild(option);
+                  });
+              },
+            });
+          });
+
+        // Event listener for the Save Changes button
+        document
+          .getElementById("saveChangesBtn")
+          .addEventListener("click", function () {
+            const selectedCandidates = document.querySelectorAll(
+              ".associatedCheckboxAdd:checked"
+            );
+
+            if (selectedCandidates.length > 0) {
+              // Collect selected candidates' names
+              const selectedNames = Array.from(selectedCandidates).map(
+                (checkbox) => {
+                  const row = checkbox.closest("tr");
+                  return row
+                    ? row.querySelector("td:nth-child(2)").innerText
+                    : "";
+                }
+              );
+              // Display confirmation with candidate names as a list
+              Swal.fire({
+                title: "Confirm Association",
+                icon: "question",
+                html: `
+                  <p class="text-start">Do you want to associate the following candidates with the job?</p>
+                  <ul style="text-align: left; list-style-type: disc; padding-left: 20px;">
+                      ${selectedNames
+                        .map((name) => `<li>${name}</li>`)
+                        .join("")}
+                  </ul>
+              `,
+                showCancelButton: true,
+                confirmButtonText: "Yes, associate",
+                cancelButtonText: "No, cancel",
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  const selectedIds = Array.from(selectedCandidates).map(
+                    (checkbox) => checkbox.dataset.id
+                  );
+                  associateCandidatesWithJob(selectedIds, id);
+                }
+              });
+            } else {
+              Swal.fire({
+                icon: "error",
+                title: "No Candidates Selected",
+                text: "Please select at least one candidate to associate with the job.",
+              });
+            }
+          });
+
+        // Add this at the top to store selected candidates
+        let selectedCandidates = new Set();
+
+        document
+          .getElementById("searchField")
+          .addEventListener("input", function () {
+            const searchValue = this.value.toLowerCase();
+
+            // Filter data
+            if (finalCandidatesResponse && finalCandidatesResponse.data) {
+              filteredData = finalCandidatesResponse.data.filter(
+                (candidate) => {
+                  const isAssociated = associated_candidates.includes(
+                    parseInt(candidate.id)
+                  );
+                  const matchesSearch =
+                    candidate.Full_Name.toLowerCase().includes(searchValue) ||
+                    candidate.Email.toLowerCase().includes(searchValue);
+                  return !isAssociated && matchesSearch;
+                }
+              );
+
+              // Update table while preserving selections
+              updateCandidateTable();
+            }
+          });
+
+        // Handle clear button (cross) click
+        document
+          .getElementById("searchField")
+          .addEventListener("search", function () {
+            if (this.value === "") {
+              // Reset search but keep selections
+              if (finalCandidatesResponse && finalCandidatesResponse.data) {
+                filteredData = finalCandidatesResponse.data.filter(
+                  (candidate) =>
+                    !associated_candidates.includes(parseInt(candidate.id))
+                );
+                updateCandidateTable();
+              }
+            }
+          });
+
+        function updateCandidateTable() {
+          const table = $("#example").DataTable();
+          if (table) {
+            table.destroy();
+          }
+
+          $("#example").DataTable({
+            data: filteredData.map((candidate) => {
+              const isSelected = selectedCandidates.has(candidate.id);
+              return [
+                `<input type="checkbox" class="candidateCheckbox associatedCheckboxAdd" 
+                 data-id="${candidate.id}" ${isSelected ? "checked" : ""}>`,
+                candidate.Full_Name ||
+                  `${candidate.First_Name} ${candidate.Last_Name}`,
+                candidate.Level_of_English || "N/A",
+                candidate.Position_Summary || "N/A",
+                candidate.Phone || candidate.Mobile || "N/A", // Added phone column
+              ];
+            }),
+            columns: [
+              { title: "Select", orderable: false },
+              { title: "Name" },
+              { title: "Level of English" },
+              { title: "Position Summary" },
+              { title: "Phone" }, // Added phone column
+            ],
+            drawCallback: function () {
+              // Update selection state when table is redrawn
+              $(".associatedCheckboxAdd").each(function () {
+                const candidateId = $(this).data("id");
+                if (selectedCandidates.has(candidateId)) {
+                  $(this).prop("checked", true);
+                }
+              });
+            },
+          });
+        }
+
+        // Update selection state
+        $(document).on("change", ".associatedCheckboxAdd", function () {
+          const candidateId = $(this).data("id");
+          if ($(this).is(":checked")) {
+            selectedCandidates.add(candidateId);
+          } else {
+            selectedCandidates.delete(candidateId);
+          }
+          const sendSaveBtn = document.getElementById("saveChangesBtn");
+          sendSaveBtn.disabled = selectedCandidates.size === 0;
+        });
+
+        // Event listener for the "Hire" button
+        hireBtn.addEventListener("click", function () {
+          const selectedCandidateCheckbox = document.querySelector(
+            ".associatedCheckbox:checked"
+          );
+          if (selectedCandidateCheckbox) {
+            const selectedCandidateId = selectedCandidateCheckbox.dataset.id;
+
+            // Find the candidate information in all_associated_candidates based on the selected ID
+            const selectedCandidateInfo = all_associated_candidates.find(
+              (candidate) => candidate?.candidateID == selectedCandidateId
+            );
+            if (selectedCandidateInfo) {
+              hireCandidateAndEdit(selectedCandidateInfo, true);
+            }
+          }
+        });
+        document
+          .getElementById("editCandidate")
+          .addEventListener("click", () => {
+            
+            const selectedCandidateInfo = all_associated_candidates.find(
+              (candidate) => candidate?.candidateID == candidateId
+            );
+            console.log(selectedCandidateInfo, 'seel');
+            if (selectedCandidateInfo) {
+              hireCandidateAndEdit(selectedCandidateInfo, false);
+            }
+          });
+        function hireCandidateAndEdit(selectedCandidateInfo, hiringCandidate) {
+          Swal.fire({
+            title: `${
+              hiringCandidate === false
+                ? "Edit Contract Details"
+                : "Hire Candidate"
+            } `,
+            html: `
+                  <form id="hireForm">
+                    <div class="mb-3">
+                      <label for="jobTitle" class="form-label w-100 d-flex justify-content-start">
+                        Job Title <span class="text-danger">*</span>
+                      </label>
+                      <input disabled required type="text" class="form-control" id="jobTitle" name="jobTitle" />
+                    </div>
+                    <div class="mb-3">
+                      <label for="companyName" class="form-label w-100 d-flex justify-content-start">
+                        Company Name: <span class="text-danger">*</span>
+                      </label>
+                      <input required disabled type="text" class="form-control" id="companyName" name="companyName" />
+                    </div>
+                    <div class="mb-3">
+                      <label for="clientNameEdit" class="form-label w-100 d-flex justify-content-start">
+                        Client Name <span class="text-danger">*</span>
+                      </label>
+                      <input required disabled type="text" class="form-control" id="clientNameEdit" name="clientNameEdit" />
+                    </div>
+                    <div class="mb-3 " >
+                        <div class="mb-3">
+                      <label for="VPName" class="form-label w-100 d-flex justify-content-start">
+                        VP Name <span class="text-danger">*</span>
+                      </label>
+                      <input required disabled type="text" class="form-control" id="VPName" name="VPName" />
+                    </div>
+                    <div class="mb-3">
+                      <label for="fullPartTime" class="form-label w-100 d-flex justify-content-start">
+                        Full/Part Time
+                      </label>
+                      <input disabled type="text" class="form-control" id="fullPartTime" name="fullPartTime" />
+                    </div>
+                    <hr/>
+                      <label for="billingStreet" class="form-label w-100 d-flex justify-content-start">
+                        Client Street Address <span class="text-danger">*</span>
+                      </label>
+                      <input required type="text" class="form-control" id="billingStreet" name="billingStreet" />
+                    </div>
+                    <div class="mb-3">
+                      <label for="billingCity" class="form-label w-100 d-flex justify-content-start">
+                        Client City <span class="text-danger">*</span>
+                      </label>
+                      <input required type="text" class="form-control" id="billingCity" name="billingCity" />
+                    </div>
+                    <div class="mb-3">
+                      <label for="billingState" class="form-label w-100 d-flex justify-content-start">
+                       Client State <span class="text-danger">*</span>
+                      </label>
+                      <input required type="text" class="form-control" id="billingState" name="billingState" />
+                    </div>
+                    <div class="mb-3">
+                      <label for="billingZipCode" class="form-label w-100 d-flex justify-content-start">
+                        Client Zip Code <span class="text-danger">*</span>
+                      </label>
+                      <input required type="text" class="form-control" id="billingZipCode" name="billingZipCode" />
+                    </div>
+                  <div class="mb-3">
+                      <label for="clientBillingRate" class="form-label w-100 d-flex justify-content-start">
+                        Client Billing Rate <span class="text-danger">*</span>
+                      </label>
+                      <input required type="number" step="0.01" class="form-control" id="clientBillingRate" name="clientBillingRate" />
+                    </div>
+                    <span id="billingRateError" class="text-danger d-none pb-4">Billing Rate should be greater than VP Monthly Rate</span>
+                    <hr/>
+                    
+                    <div class="mb-3">
+                      <label for="workerEmail" class="form-label w-100 d-flex justify-content-start">
+                        VP Email <span class="text-danger">*</span>
+                      </label>
+                      <input required type="email" class="form-control" id="workerEmail" name="workerEmail" 
+                             pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                             title="Please enter a valid email address" />
+                      <div id="emailError" class="text-danger mt-1" style="display: none;">
+                        Please enter a valid email address with @ symbol.
+                      </div>
+                    </div>
+                    <div class="mb-3">
+                      <label for="workerPhone" class="form-label w-100 d-flex justify-content-start">
+                        VP Phone <span class="text-danger">*</span>
+                      </label>
+                      <input required type="tel" class="form-control" id="workerPhone" name="workerPhone" 
+                             pattern="[0-9+\-\s\(\)]{10,15}"
+                             title="Please enter a valid phone number" />
+                      <div id="phoneError" class="text-danger mt-1" style="display: none;">
+                        Please enter a valid phone number.
+                      </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                      <label for="candidatePosition" class="form-label w-100 d-flex justify-content-start">
+                        VP Position <span class="text-danger">*</span>
+                      </label>
+                      <input required type="text" class="form-control" id="candidatePosition" name="candidatePosition" />
+                    </div>
+                    <div class="mb-3">
+                      <label for="hireDate" class="form-label w-100 d-flex justify-content-start">
+                        Hire Date <span class="text-danger">*</span>
+                      </label>
+                      <input required type="date" class="form-control" id="hireDate" name="hireDate" />
+                    </div>
+                    <div class="mb-3">
+                      <label for="serviceCommencementDate" class="form-label w-100 d-flex justify-content-start">
+                        Service Commencement Date<span class="text-danger">*</span>
+                        <i
+                          class="bi bi-info-circle ms-1"
+                          style="margin-top: 3px; font-size: 16px; cursor: pointer;"
+                          data-bs-toggle="tooltip"
+                          data-bs-placement="right"
+                          title="Should be same as hire date"
+                          style="cursor: pointer;"
+                        ></i>
+                      </label>
+                      <input required type="text" class="form-control" id="serviceCommencementDate" name="serviceCommencementDate" />
+                    </div>
+                    <div class="mb-3">
+                      <label for="servicestobePerformed" class="form-label w-100 d-flex justify-content-start">
+                        Services to be Performed <span class="text-danger">*</span>
+                      </label>
+                      <textarea required class="form-control" id="servicestobePerformed" name="servicestobePerformed"></textarea>
+                    </div>
+                    <div class="mb-3">
+                      <label for="serviceHours" class="form-label w-100 d-flex justify-content-start">
+                        Service Hours <span class="text-danger">*</span>
+                      </label>
+                      <textarea required class="form-control" id="serviceHours" name="serviceHours"></textarea>
+                    </div>
+                    <div class="mb-3">
+                      <label for="candidateMonthlyRate" class="form-label w-100 d-flex justify-content-start">
+                        VP Monthly Rate <span class="text-danger">*</span>
+                      </label>
+                      <input required  type="number" step="0.01" class="form-control" id="candidateMonthlyRate" name="candidateMonthlyRate" />
+                    </div>
+                    
+                    <p>
+                       ${
+                         hiringCandidate === false
+                           ? "Are You sure you want to update?"
+                           : "Do you want to hire " + selectedCandidateInfo.name
+                       }?
+                    </p>
+                    <button type="submit" id="submitButton" class="btn btn-success">${
+                      hiringCandidate === false ? "Update" : "Yes, Hire"
+                    }</button>
+                    <button type="button" id="cancelButton" class="btn btn-dark">No, cancel</button>
+                  </form>
+                  `,
+            icon: "warning",
+            showConfirmButton: false,
+            showCancelButton: false,
+            didRender: () => {
+              document.getElementById("VPName").value =
+                hiringCandidate === false ? VPName : selectedCandidateInfo.name;
+              document.getElementById("candidatePosition").value = vpPosition;
+              document.getElementById("clientNameEdit").value = clientNameEdit;
+              document.getElementById("fullPartTime").value =
+                fullPartTime || "Full Time";
+              document.getElementById("companyName").value = companyName;
+              document.getElementById("serviceCommencementDate").value =
+                serviceCommencementDate;
+              document.getElementById("hireDate").value = hireDate;
+              document.getElementById("servicestobePerformed").value =
+                servicesPerformed;
+
+              // Add CSS for the textarea
+              const style = document.createElement("style");
+              style.innerHTML = `
+                    #servicestobePerformed {
+                        overflow: hidden;
+                        resize: none;
+                        min-height: 100px;
+                    }
+                `;
+              document.head.appendChild(style);
+
+              const servicesTextarea = document.getElementById(
+                "servicestobePerformed"
+              );
+              const maxLines = 15;
+              const lineHeight = 20; // Adjust based on your CSS
+
+              // Function to resize textarea
+              function resizeTextarea() {
+                servicesTextarea.style.height = "auto";
+                const newHeight = Math.min(
+                  servicesTextarea.scrollHeight,
+                  maxLines * lineHeight
+                );
+                servicesTextarea.style.height = `${newHeight}px`;
+              }
+
+              // Add event listeners
+              servicesTextarea.addEventListener("input", resizeTextarea);
+              servicesTextarea.addEventListener("keydown", resizeTextarea);
+              servicesTextarea.addEventListener("keyup", resizeTextarea);
+
+              // Trigger initial resize
+              resizeTextarea();
+              document.getElementById("serviceHours").value = serviceHours;
+              document.getElementById("candidateMonthlyRate").value =
+                vpMonthlyRate;
+              document.getElementById("clientBillingRate").value =
+                clientBillingRate;
+              document.getElementById("jobTitle").value = jobTitleEdit;
+              // Add event listener to the cancel button
+              document
+                .getElementById("cancelButton")
+                .addEventListener("click", () => {
+                  Swal.close();
+                });
+              document.getElementById("billingStreet").value = billingStreet;
+              document.getElementById("billingZipCode").value = billingZipCode;
+              document.getElementById("billingState").value = billingState;
+              document.getElementById("billingCity").value = billingCity;
+
+              // Set the initial values
+              document.getElementById("hireDate").value = hireDate;
+              document.getElementById("serviceCommencementDate").value =
+                serviceCommencementDate;
+
+              // Track if service commencement date has been manually changed
+              let serviceDateManuallyChanged = false;
+
+              // When service commencement date is manually edited
+              document
+                .getElementById("serviceCommencementDate")
+                .addEventListener("input", function () {
+                  serviceDateManuallyChanged = true;
+                });
+
+              // When hire date changes
+              document
+                .getElementById("hireDate")
+                .addEventListener("change", function () {
+                  if (!serviceDateManuallyChanged) {
+                    if (this.value) {
+                      const parts = this.value.split("-");
+                      const hireDate = new Date(
+                        parts[0],
+                        parts[1] - 1,
+                        parts[2]
+                      );
+
+                      if (!isNaN(hireDate.getTime())) {
+                        const options = {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        };
+                        const formattedDate = hireDate.toLocaleDateString(
+                          "en-US",
+                          options
+                        );
+                        document.getElementById(
+                          "serviceCommencementDate"
+                        ).value = formattedDate;
+                      }
+                    }
+                  }
+                });
+
+              // Reset the manual change flag when form opens
+              serviceDateManuallyChanged = false;
+
+              // Initialize with current dates if available
+              if (hireDate && !serviceCommencementDate) {
+                const event = new Event("change");
+                document.getElementById("hireDate").dispatchEvent(event);
+              }
+
+              // Prefill Worker Email and Phone from job opening or candidate
+              // For Hire: use selected candidate's info, For Edit: use job opening's existing info
+              const rawWorkerEmail =
+                hiringCandidate === true
+                  ? selectedCandidateInfo.email || ""
+                  : candidateEmailFromJob || "";
+              const rawWorkerPhone =
+                hiringCandidate === true
+                  ? selectedCandidateInfo.phone || ""
+                  : candidatePhoneFromJob || "";
+
+              // Clean up email and phone - replace "N/A" with empty string
+              const workerEmail =
+                rawWorkerEmail && rawWorkerEmail !== "N/A"
+                  ? rawWorkerEmail
+                  : "";
+              const workerPhone =
+                rawWorkerPhone && rawWorkerPhone !== "N/A"
+                  ? rawWorkerPhone
+                  : "";
+
+              document.getElementById("workerEmail").value = workerEmail;
+              document.getElementById("workerPhone").value = workerPhone;
+
+              // Add event listener to the submit button
+              document
+                .getElementById("hireForm")
+                .addEventListener("submit", (e) => {
+                  e.preventDefault();
+
+                  if (
+                    Number(document.getElementById("clientBillingRate").value) >
+                    Number(
+                      document.getElementById("candidateMonthlyRate").value
+                    )
+                  ) {
+                    const billingStreetUpdated =
+                      document.getElementById("billingStreet").value;
+                    const billingCityUpdated =
+                      document.getElementById("billingCity").value;
+                    const billingStateUpdated =
+                      document.getElementById("billingState").value;
+                    const billingZipCodeUpdated =
+                      document.getElementById("billingZipCode").value;
+                    // Get values from the form inputs
+                    const serviceCommencementDateValue =
+                      document.getElementById("serviceCommencementDate").value;
+                    const hireDateId =
+                      document.getElementById("hireDate").value;
+                    const servicesToBePerformed = document.getElementById(
+                      "servicestobePerformed"
+                    ).value;
+                    const serviceHours =
+                      document.getElementById("serviceHours").value;
+                    const candidateMonthlyRate = document.getElementById(
+                      "candidateMonthlyRate"
+                    ).value;
+                    const clientBillingRate =
+                      document.getElementById("clientBillingRate").value;
+                    const candidatePosition =
+                      document.getElementById("candidatePosition").value;
+                    const workerEmail =
+                      document.getElementById("workerEmail").value;
+                    const workerPhone =
+                      document.getElementById("workerPhone").value;
+
+                    // Email validation
+                    const emailPattern =
+                      /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
+                    const emailError = document.getElementById("emailError");
+                    const phoneError = document.getElementById("phoneError");
+
+                    // Reset error states
+                    emailError.style.display = "none";
+                    phoneError.style.display = "none";
+                    document
+                      .getElementById("workerEmail")
+                      .classList.remove("is-invalid");
+                    document
+                      .getElementById("workerPhone")
+                      .classList.remove("is-invalid");
+
+                    let isValid = true;
+
+                    // Validate email
+                    if (!workerEmail || !emailPattern.test(workerEmail)) {
+                      emailError.style.display = "block";
+                      document
+                        .getElementById("workerEmail")
+                        .classList.add("is-invalid");
+                      isValid = false;
+                    }
+
+                    // Validate phone (basic validation)
+                    if (!workerPhone || workerPhone.trim().length < 10) {
+                      phoneError.style.display = "block";
+                      phoneError.textContent =
+                        "Phone number must be at least 10 characters.";
+                      document
+                        .getElementById("workerPhone")
+                        .classList.add("is-invalid");
+                      isValid = false;
+                    }
+
+                    if (
+                      serviceCommencementDateValue &&
+                      servicesToBePerformed &&
+                      serviceHours &&
+                      candidateMonthlyRate &&
+                      candidatePosition != undefined &&
+                      isValid
+                    ) {
+                      const hire = true;
+
+                      hireCandidate(
+                        id,
+                        selectedCandidateInfo.candidateID,
+                        selectedCandidateInfo.name,
+                        selectedCandidateInfo.email,
+                        selectedCandidateInfo.street,
+                        selectedCandidateInfo.city,
+                        selectedCandidateInfo.state,
+                        selectedCandidateInfo.zip,
+                        selectedCandidateInfo.country,
+                        serviceCommencementDateValue,
+                        servicesToBePerformed,
+                        serviceHours,
+                        candidateMonthlyRate,
+                        clientBillingRate,
+                        candidatePosition,
+                        hire,
+                        billingStreetUpdated,
+                        billingZipCodeUpdated,
+                        billingStateUpdated,
+                        billingCityUpdated,
+                        hireDateId,
+                        workerEmail,
+                        workerPhone
+                      );
+                    }
+                    console.log("All Data", {
+                      hireDateId,
+                      serviceCommencementDateValue,
+                      servicesToBePerformed,
+                      serviceHours,
+                      candidateMonthlyRate,
+                      clientBillingRate,
+                      candidatePosition,
+                      billingStreetUpdated,
+                      billingCityUpdated,
+                      billingStateUpdated,
+                      billingZipCodeUpdated,
+                      selectedCandidateInfo,
+                      workerEmail,
+                      workerPhone,
+                    });
+
+                    Swal.close(); // Close the modal after submission
+                  } else {
+                    document
+                      .getElementById("billingRateError")
+                      .classList.remove("d-none");
+                  }
+                });
+            },
+          });
+        }
+
+        // ################### VP Evaluation Management Functions
+
+        async function checkVPEvaluationStatus(candidateId, jobId) {
+          try {
+            console.log(
+              "Checking VP Evaluation status for candidate:",
+              candidateId,
+              "and job:",
+              jobId
+            );
+
+            // Search for VP Evaluations for this candidate and job
+            const vpEvaluationSearchResponse =
+              await ZOHO.RECRUIT.API.searchRecord({
+                Entity: "VP_Evaluation",
+                criteria: `((Candidate:equals:${candidateId})and(Job_Opening:equals:${jobId}))`,
+                sort_by: "Created_Time",
+                sort_order: "desc",
+              });
+
+            console.log(
+              "VP Evaluation search response:",
+              vpEvaluationSearchResponse
+            );
+
+            let latestEvaluation = null;
+            let evaluationAge = null;
+            let shouldShowNew = true; // Default to show "new" state
+
+            if (
+              vpEvaluationSearchResponse.data &&
+              vpEvaluationSearchResponse.data.length > 0
+            ) {
+              latestEvaluation = vpEvaluationSearchResponse.data[0];
+
+              // Calculate age of evaluation
+              const createdDate = new Date(latestEvaluation.Created_Time);
+              const now = new Date();
+              const diffTime = Math.abs(now - createdDate);
+              const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+              const diffMonths = Math.floor(diffDays / 30);
+
+              evaluationAge = {
+                days: diffDays,
+                months: diffMonths,
+                isOld: diffMonths >= 6,
+              };
+
+              shouldShowNew = evaluationAge.isOld;
+
+              console.log(
+                "Found evaluation:",
+                latestEvaluation.id,
+                "Age:",
+                evaluationAge
+              );
+            }
+
+            // Update button states
+            updateVPEvaluationButtons(
+              latestEvaluation,
+              evaluationAge,
+              shouldShowNew
+            );
+          } catch (error) {
+            console.error("Error checking VP Evaluation status:", error);
+            // Default to new evaluation state on error
+            updateVPEvaluationButtons(null, null, true);
+          }
+        }
+
+        function updateVPEvaluationButtons(
+          evaluation,
+          evaluationAge,
+          shouldShowNew
+        ) {
+          const sendVPEvaluationBtn =
+            document.getElementById("sendVPEvaluation");
+          // VP Evaluation Result button removed
+
+          if (shouldShowNew || !evaluation) {
+            // BLUE state - No evaluation, old evaluation, or invalid evaluation ID
+            sendVPEvaluationBtn.className = "btn btn-primary w-100";
+            sendVPEvaluationBtn.style.fontSize = "small";
+            sendVPEvaluationBtn.innerHTML = "Create New Evaluation";
+            sendVPEvaluationBtn.onclick = createNewEvaluation;
+
+            // VP Evaluation Result button removed
+          } else {
+            // Evaluation found - set color and text based on status
+            const status =
+              evaluation.VP_Form_Status || "Awaiting Client Response";
+            console.log("Evaluation status:", status);
+
+            let buttonClass = "btn w-100";
+            let buttonColor = "";
+            let buttonName = "Create New Evaluation";
+
+            switch (status) {
+              case "Awaiting Client Response":
+                buttonClass += "btn-danger";
+                buttonColor = "#CF0000";
+                buttonName = "Generated/Pending Client";
+                break;
+              case "Client Completed":
+                buttonClass += "btn-primary";
+                buttonColor = "#BF3D08";
+                buttonName = "Client Completed/Pending Choris";
+                break;
+              case "Choris Completed":
+                buttonClass += "btn-warning";
+                buttonColor = "#B9BF08";
+                buttonName = "Choris Completed/Pending VP";
+                break;
+              case "All Completed":
+                buttonClass += "btn-success";
+                buttonColor = "#008F32";
+                buttonName = "VP Evaluation Completed";
+                break;
+              default:
+                buttonClass += "btn-secondary";
+                buttonColor = "#6c757d";
+                buttonName = "Create New Evaluation";
+            }
+
+            sendVPEvaluationBtn.className = buttonClass;
+            sendVPEvaluationBtn.style.backgroundColor = buttonColor;
+            sendVPEvaluationBtn.style.borderColor = buttonColor;
+            sendVPEvaluationBtn.style.fontSize = "small";
+            sendVPEvaluationBtn.innerHTML = buttonName;
+            sendVPEvaluationBtn.style.color = "#ffff";
+            sendVPEvaluationBtn.onclick = () =>
+              showEvaluationDialog(evaluation, evaluationAge);
+          }
+        }
+
+        function showEvaluationDialog(evaluation, evaluationAge) {
+          const ageText =
+            evaluationAge.months > 0
+              ? `${evaluationAge.months} month${
+                  evaluationAge.months > 1 ? "s" : ""
+                } old`
+              : `${evaluationAge.days} day${
+                  evaluationAge.days > 1 ? "s" : ""
+                } old`;
+
+          // Determine button text and logic based on status
+          const status =
+            evaluation.VP_Form_Status || "Awaiting Client Response";
+          let confirmButtonText = "";
+          let showConfirmButton = false;
+          let cancelButtonText = "";
+          let resendField = "";
+
+          if (!status || status === "Awaiting Client Response") {
+            cancelButtonText = "Resend VP Evaluation to Client";
+            resendField = "Send_VP_Email_Check";
+          } else if (status === "Client Completed") {
+            cancelButtonText = "Resend VP Evaluation to Choris";
+            resendField = "Check_For_Client_Form";
+          } else if (status === "Choris Completed") {
+            cancelButtonText = "Resend VP Evaluation to VP";
+            resendField = "Check_For_Choris_Comment_Form";
+          } else if (status === "All Completed") {
+            cancelButtonText = "Resend Completed Evaluation";
+            resendField = "Send_Evaluation_PDF_Check";
+            confirmButtonText = "Start New Evaluation";
+            showConfirmButton = true;
+          }
+
+          Swal.fire({
+            title: "VP Evaluation Found",
+            html: `
+              <div class="text-start">
+                <p><strong>Evaluation ID:</strong> ${
+                  evaluation.VP_Evaluation_Number || evaluation.id
+                }</p>
+                <p><strong>Status:</strong> ${status}</p>
+                <p><strong>Age:</strong> ${ageText}</p>
+                <p><strong>Created:</strong> ${new Date(
+                  evaluation.Created_Time
+                ).toLocaleDateString()}</p>
+              </div>
+              <hr>
+              <p>What would you like to do?</p>
+            `,
+            icon: "info",
+            showCancelButton: true,
+            showCloseButton: true,
+            showConfirmButton: showConfirmButton,
+            confirmButtonText: showConfirmButton
+              ? confirmButtonText
+              : undefined,
+            cancelButtonText: cancelButtonText,
+            closeButtonAriaLabel: "Close dialog",
+            confirmButtonColor: "#0d6efd",
+            cancelButtonColor: "#198754",
+            reverseButtons: true,
+            footer:
+              '<button type="button" class="btn btn-secondary" onclick="Swal.close()">Close</button>',
+          }).then(async (result) => {
+            if (result.isConfirmed && showConfirmButton) {
+              // Only show Start New Evaluation when status is 'All Completed'
+              createNewEvaluation();
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+              // Resend logic: update VP Evaluation with correct field
+              try {
+                await ZOHO.RECRUIT.API.updateRecord({
+                  Entity: "VP_Evaluation",
+                  APIData: {
+                    id: evaluation.id,
+                    [resendField]: true,
+                  },
+                  Trigger: ["workflow"],
+                });
+                Swal.fire({
+                  title: "Success!",
+                  text: `${cancelButtonText} action completed successfully.`,
+                  icon: "success",
+                  confirmButtonText: "OK",
+                });
+              } catch (error) {
+                Swal.fire({
+                  title: "Error!",
+                  text: `Failed to resend evaluation. Please try again.`,
+                  icon: "error",
+                  confirmButtonText: "OK",
+                });
+              }
+            }
+            // result.dismiss === Swal.DismissReason.close handles the close button click
+            // No additional action needed for close - dialog will just close
+          });
+        }
+
+        async function createNewEvaluation() {
+          try {
+            const createBtn = document.getElementById("sendVPEvaluation");
+            createBtn.disabled = true;
+            createBtn.innerHTML =
+              '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Creating...';
+
+            console.log("Creating new VP Evaluation...");
+            console.log("Candidate ID:", candidateId);
+            console.log("Job ID:", id);
+            console.log("VP Name:", vpEvaluationName);
+
+              const response = await ZOHO.RECRUIT.API.insertRecord({
+                Entity: "VP_Evaluation",
+                APIData: {
+                  Candidate: candidateId,
+                  Job_Opening: id[0],
+                  Send_VP_Email_Check: false,
+                  CustomModule2_Name: vpEvaluationName,
+                  VP_Form_Status: "Awaiting Client Response",
+                  Client_Assigned: companyName,
+                },
+                Trigger: ["workflow"],
+              });
+
+              if (response.data[0].code === "SUCCESS") {
+                const newVpEvaluationId = response.data[0].details.id;
+                console.log("New VP Evaluation created:", newVpEvaluationId);
+               
+              // Update the Job_Opening with the new VP_Evaluation_ID
+              await ZOHO.RECRUIT.API.updateRecord({
+                Entity: "Job_Openings",
+                APIData: {
+                  id: id[0],
+                  VP_Evaluation_ID: newVpEvaluationId,
+                },
+
+                Trigger: ["workflow"],
+              });
+              console.log(APIData, 'api data');
+
+              // Search for the newly created VP Evaluation to get updated status
+              const vpEvaluationSearchResponse =
+                await ZOHO.RECRUIT.API.searchRecord({
+                  Entity: "VP_Evaluation",
+                  criteria: `((Candidate:equals:${candidateId})and(Job_Opening:equals:${id[0]}))`,
+                  sort_by: "Created_Time",
+                  sort_order: "desc",
+                });
+
+              console.log(
+                "VP Evaluation search after creation:",
+                vpEvaluationSearchResponse
+              );
+
+              Swal.fire({
+                title: "Success!",
+                text: "New VP Evaluation Form has been created and sent to client.",
+                icon: "success",
+                confirmButtonText: "OK",
+              }).then(() => {
+                // Update button states immediately with the search results
+                if (
+                  vpEvaluationSearchResponse.data &&
+                  vpEvaluationSearchResponse.data.length > 0
+                ) {
+                  const latestEvaluation = vpEvaluationSearchResponse.data[0];
+                  updateVPEvaluationButtons(
+                    latestEvaluation,
+                    { days: 0, months: 0, isOld: false },
+                    false
+                  );
+
+                  
+                } else {
+
+                  // Fallback to regular check
+                  checkVPEvaluationStatus(candidateId, id);
+                
+                }
+              });
+            } else {
+              throw new Error("Failed to create VP Evaluation");
+            }
+
+          } catch (error) {
+            console.error("Error creating VP Evaluation:", error);
+            Swal.fire({
+              title: "Error!",
+              text: "Failed to create VP Evaluation Form. Please try again.",
+              icon: "error",
+              confirmButtonText: "OK",
+            });
+          } finally {
+            const createBtn = document.getElementById("sendVPEvaluation");
+            createBtn.disabled = false;
+            createBtn.innerHTML = "Send VP Evaluation Form";
+          }
+        }
+
+        //  ################### Send VP Evaluation
+
+        // VP Evaluation Result button functionality removed
+
+        // UnHire Button
+        const associateUnHireBtn =
+          document.getElementById("associateUnHireBtn");
+        associateUnHireBtn.addEventListener("click", function () {
+          Swal.fire({
+            title: "Unhire Candidate",
+            html: `
+              <div class="mb-3">
+                <label for="unhireReason" class="form-label w-100 d-flex justify-content-start">
+                  Reason for Unhiring <span class="text-danger">*</span>
+                </label>
+                <textarea 
+                  required 
+                  class="form-control" 
+                  id="unhireReason" 
+                  name="unhireReason" 
+                  rows="4" 
+                  placeholder="Please provide the reason for unhiring this candidate..."
+                ></textarea>
+                <div id="reasonError" class="text-danger mt-2" style="display: none;">
+                  Reason is required to unhire the candidate.
+                </div>
+              </div>
+            `,
+            icon: "warning",
+            showCancelButton: true,
+            cancelButtonText: "Cancel",
+            confirmButtonText: "Unhire",
+            reverseButtons: true,
+            customClass: {
+              cancelButton: "btn btn-secondary me-3",
+              confirmButton: "btn btn-danger",
+            },
+            buttonsStyling: false,
+            preConfirm: () => {
+              const reason = document
+                .getElementById("unhireReason")
+                .value.trim();
+              if (!reason) {
+                document.getElementById("reasonError").style.display = "block";
+                return false;
+              }
+              return reason;
+            },
+          }).then((result) => {
+            if (result.isConfirmed) {
+              const unhireReason = result.value;
+              const candidateName = hiredCandidateDetails.name || VPName;
+              const candidateID =
+                hiredCandidateDetails.candidateId || candidateId;
+              unhireNotesConfig = {
+                APIData: [
+                  {
+                    Note_Title: `${candidateName} Unhired`,
+                    Note_Content: `${candidateName} with ID ${candidateID} was unhired and the Reason is: ${unhireReason}`,
+                    Parent_Id: id[0],
+                    se_module: "Job_Openings",
+                  },
+                ],
+              };
+              console.log("Unhire Notes Config:", unhireNotesConfig);
+              // Create note before unhiring
+              ZOHO.RECRUIT.API.createNotes(unhireNotesConfig).then(
+                function (successResponse) {
+                  console.log(
+                    "Unhire Note created successfully:",
+                    successResponse
+                  );
+
+                  // Now proceed with unhiring the candidate
+                  hireCandidate(
+                    id,
+                    hiredCandidateDetails.candidateId,
+                    hiredCandidateDetails.name,
+                    hiredCandidateDetails.email,
+                    hiredCandidateDetails.street,
+                    hiredCandidateDetails.city,
+                    hiredCandidateDetails.state,
+                    hiredCandidateDetails.zip,
+                    hiredCandidateDetails.country,
+                    hiredCandidateDetails.serviceCommencementDate,
+                    hiredCandidateDetails.servicesToBePerformed,
+                    hiredCandidateDetails.serviceHours,
+                    hiredCandidateDetails.candidateMonthlyRate,
+                    hiredCandidateDetails.clientBillingRate,
+                    hiredCandidateDetails.candidatePosition,
+                    false,
+                    hiredCandidateDetails.billingStreet,
+                    hiredCandidateDetails.billingZipCode,
+                    hiredCandidateDetails.billingState,
+                    hiredCandidateDetails.billingCity,
+                    null,
+                    hiredCandidateDetails.workerEmail,
+                    hiredCandidateDetails.workerPhone,
+                    true
+                  );
+
+                  Swal.fire({
+                    title: "Success!",
+                    text: "Candidate has been successfully unhired and note has been added to the job.",
+                    icon: "success",
+                    confirmButtonText: "OK",
+                    customClass: {
+                      confirmButton: "btn btn-success",
+                    },
+                    buttonsStyling: false,
+                    iconColor: "#198754",
+                  }).then(() => {
+                    window.location.reload();
+                  });
+                },
+                function (errorResponse) {
+                  console.error("Error creating note:", errorResponse);
+
+                  // Still proceed with unhiring even if note creation fails
+                  hireCandidate(
+                    id,
+                    hiredCandidateDetails.candidateId,
+                    hiredCandidateDetails.name,
+                    hiredCandidateDetails.email,
+                    hiredCandidateDetails.street,
+                    hiredCandidateDetails.city,
+                    hiredCandidateDetails.state,
+                    hiredCandidateDetails.zip,
+                    hiredCandidateDetails.country,
+                    hiredCandidateDetails.serviceCommencementDate,
+                    hiredCandidateDetails.servicesToBePerformed,
+                    hiredCandidateDetails.serviceHours,
+                    hiredCandidateDetails.candidateMonthlyRate,
+                    hiredCandidateDetails.clientBillingRate,
+                    hiredCandidateDetails.candidatePosition,
+                    false,
+                    hiredCandidateDetails.billingStreet,
+                    hiredCandidateDetails.billingZipCode,
+                    hiredCandidateDetails.billingState,
+                    hiredCandidateDetails.billingCity,
+                    null,
+                    hiredCandidateDetails.workerEmail,
+                    hiredCandidateDetails.workerPhone,
+                    true
+                  );
+
+                  Swal.fire({
+                    title: "Success!",
+                    text: "Candidate has been unhired but there was an issue creating the note.",
+                    icon: "success",
+                    confirmButtonText: "OK",
+                    customClass: {
+                      confirmButton: "btn btn-success",
+                    },
+                    buttonsStyling: false,
+                    iconColor: "#198754",
+                  }).then(() => {
+                    window.location.reload();
+                  });
+                }
+              );
+            }
+          });
+        });
+
+        sendEmailBtn.addEventListener("click", function () {
+          const selectedCandidateCheckboxes = document.querySelectorAll(
+            ".associatedCheckbox:checked"
+          );
+          const selectedCandidates = Array.from(
+            selectedCandidateCheckboxes
+          ).map((checkbox) => {
+            const candidateId = checkbox.dataset.id;
+            // Find the candidate information in all_associated_candidates based on the selected ID
+            return (
+              all_associated_candidates.find(
+                (candidate) => candidate.candidateID === candidateId
+              )?.name || "Unknown"
+            );
+          });
+
+          if (selectedCandidates.length > 0) {
+            const candidateNamesList = selectedCandidates.join(", ");
+
+            Swal.fire({
+              icon: "warning",
+              title: "Confirm Email",
+              html: `Do you want to send the Summary of the following candidates via email for Review to Sales?<br><b>${candidateNamesList}</b>`,
+              showCancelButton: true,
+              confirmButtonText: "Yes, send email",
+              cancelButtonText: "No, cancel",
+            }).then((result) => {
+              if (result.isConfirmed) {
+                const selectedCandidateIds = Array.from(
+                  selectedCandidateCheckboxes
+                ).map((checkbox) => checkbox.dataset.id);
+                sendEmailToCandidates(selectedCandidateIds, id);
+              }
+            });
+          } else {
+            Swal.fire({
+              icon: "error",
+              title: "No Candidates Selected",
+              text: "Please select at least one candidate to send an email.",
+            });
+          }
+        });
+      });
+
+      ZOHO.embeddedApp.initialize();
+
+      // Function to associate selected candidates with the job
+      function associateCandidatesWithJob(candidateIds, jobId) {
+        ZOHO.RECRUIT.API.associateJobOpening({
+          ids: candidateIds,
+          jobids: jobId,
+          comments: "Record Associated Successfully",
+        })
+          .then(function (successResponse) {
+            Swal.fire({
+              icon: "success",
+              title: "Candidates Associated",
+              text: "The selected candidates have been successfully associated with the job.",
+            }).then(() => {
+              location.reload();
+            });
+          })
+          .catch(function (error) {
+            Swal.fire({
+              icon: "error",
+              title: "Association Failed",
+              text: "There was an error associating the candidates with the job. Please try again.",
+            });
+          });
+      }
+      const JOB_ID = Array.isArray(id) ? id[0] : id;
+
+
+      // Function to hire the selected candidate
+      function hireCandidate(
+        jobId,
+        candidateId,
+        candidateName,
+        candidateEmail,
+        candidateStreet,
+        candidateCity,
+        candidateState,
+        candidateZip,
+        candidateCountry,
+        serviceCommencementDateId,
+        servicesToBePerformed,
+        serviceHours,
+        candidateMonthlyRate,
+        clientBillingRate,
+        candidatePosition,
+        hire,
+        billingStreetUpdated,
+        billingZipCodeUpdated,
+        billingStateUpdated,
+        billingCityUpdated,
+        hireDate,
+        workerEmail,
+        workerPhone,
+        suppressMessages = false
+      ) {
+        
+        if (billingStreetUpdated) {
+          const updateJobWithBillingStreet = {
+            id: jobId[0],
+            Candidate: hire ? candidateId : null,
+            Hired_Candidate_ID: hire ? candidateId : null,
+            VP_Evaluation_ID: hire ? null : null,
+            Candidate_Email: hire ? workerEmail : "",
+            Candidate_Phone: hire ? workerPhone : "",
+            Candidate_Address: hire
+              ? `${candidateStreet} ${candidateCity} ${candidateState} ${candidateZip}`
+              : "",
+            Candidate_Country: hire ? candidateCountry : "",
+            Client_Billing_Rate: clientBillingRate,
+            Service_Hours: hire ? serviceHours : "",
+            Service_Commencement_Date: hire ? serviceCommencementDateId : "",
+            Services_to_be_Performed: hire ? servicesToBePerformed : "",
+            Service_Fees: hire ? candidateMonthlyRate : "",
+            VA_Position: hire ? candidatePosition : "",
+            Hired: hire,
+            Engagement_Contract_ID: hire ? null : null,
+            Candidate_Contract_ID: hire ? null : null,
+            Client_Contract_ID: hire ? null : null,
+            Street: billingStreetUpdated,
+            Single_Line_35: billingZipCodeUpdated,
+            Single_Line_34: billingStateUpdated,
+            Single_Line_33: billingCityUpdated,
+            Hire_Date: hireDate,
+          };
+          console.log(
+            "Updating job with billing street:",
+            updateJobWithBillingStreet
+          );
+          ZOHO.RECRUIT.API.updateRecord({
+            Entity: "Job_Openings",
+            APIData: updateJobWithBillingStreet,
+            Trigger: ["workflow"],
+          }).then(
+            async function (successResponse) {
+              if (hire) {
+                // Search for VP Evaluations for this candidate and job
+                try {
+                  console.log(
+                    "Searching for VP Evaluations for candidate:",
+                    candidateId,
+                    "and job:",
+                    jobId[0]
+                  );
+
+                  const vpEvaluationSearchResponse =
+                    await ZOHO.RECRUIT.API.searchRecord({
+                      Entity: "VP_Evaluation",
+                      criteria: `((Candidate:equals:${candidateId})and(Job_Opening:equals:${jobId[0]}))`,
+                      sort_by: "Created_Time",
+                      sort_order: "desc",
+                    });
+
+                  console.log(
+                    "VP Evaluation search response:",
+                    vpEvaluationSearchResponse
+                  );
+
+                  if (
+                    vpEvaluationSearchResponse.data &&
+                    vpEvaluationSearchResponse.data.length > 0
+                  ) {
+                    const latestVPEvaluation =
+                      vpEvaluationSearchResponse.data[0];
+                    console.log(
+                      "Found VP Evaluation, updating Job_Opening with VP_Evaluation_ID:",
+                      latestVPEvaluation.id
+                    );
+
+                    // Update the Job_Opening with the VP_Evaluation_ID
+                    await ZOHO.RECRUIT.API.updateRecord({
+                      Entity: "Job_Openings",
+                      APIData: {
+                        id: jobId[0],
+                        VP_Evaluation_ID: latestVPEvaluation.id,
+                      },
+                      Trigger: ["workflow"],
+                    });
+
+                    console.log(
+                      "Successfully updated Job_Opening with VP_Evaluation_ID"
+                    );
+                  } else {
+                    console.log(
+                      "No VP Evaluation found for this candidate and job"
+                    );
+                  }
+                } catch (vpEvaluationError) {
+                  console.error(
+                    "Error searching for VP Evaluations:",
+                    vpEvaluationError
+                  );
+                  // Don't fail the hire process if VP Evaluation search fails
+                }
+
+                if (!suppressMessages) {
+                  Swal.fire({
+                    icon: "success",
+                    title: "VP Hired",
+                    text: `VP ${candidateName} has been successfully hired.`,
+                  }).then(() => {
+                    location.reload();
+                  });
+                } else {
+                  location.reload();
+                }
+              } else {
+                if (!suppressMessages) {
+                  Swal.fire({
+                    icon: "success",
+                    title: "VP UnHired",
+                    text: `VP has been successfully UnHired.`,
+                  }).then(() => {
+                    const widgetUnHired =
+                      document.getElementById("widgetUnhired");
+                    widgetUnHired.classList.remove("d-none");
+                    const widgetHired = document.getElementById("widgetHired");
+                    widgetHired.classList.add("d-none");
+                  });
+                } else {
+                  // Just switch widgets without showing message when suppressMessages is true
+                  const widgetUnHired =
+                    document.getElementById("widgetUnhired");
+                  widgetUnHired.classList.remove("d-none");
+                  const widgetHired = document.getElementById("widgetHired");
+                  widgetHired.classList.add("d-none");
+                }
+              }
+            },
+            function (errorResponse) {
+              // console.log("Error", errorResponse);
+              Swal.fire({
+                icon: "error",
+                title: "Hiring Failed",
+                text: "There was an error hiring the candidate. Please try again.",
+              });
+            }
+          );
+        } else {
+          const updateJobWithoutBillingStreet = {
+            id: jobId[0],
+            Candidate: hire ? candidateId : null,
+            Hired_Candidate_ID: hire ? candidateId : null,
+            VP_Evaluation_ID: hire ? null : null,
+            Candidate_Email: hire ? workerEmail : "",
+            Candidate_Phone: hire ? workerPhone : "",
+            Candidate_Address: hire
+              ? `${candidateStreet} ${candidateCity} ${candidateState} ${candidateZip}`
+              : "",
+            Candidate_Country: hire ? candidateCountry : "",
+            Client_Billing_Rate: clientBillingRate,
+            Service_Hours: hire ? serviceHours : "",
+            Service_Commencement_Date: hire ? serviceCommencementDateId : "",
+            Services_to_be_Performed: hire ? servicesToBePerformed : "",
+            Service_Fees: hire ? candidateMonthlyRate : "",
+            VA_Position: hire ? candidatePosition : "",
+            Hired: hire,
+            Engagement_Contract_ID: hire ? null : null,
+            Candidate_Contract_ID: hire ? null : null,
+            Client_Contract_ID: hire ? null : null,
+            Hire_Date: hireDate,
+          };
+          ZOHO.RECRUIT.API.updateRecord({
+            Entity: "Job_Openings",
+            APIData: updateJobWithoutBillingStreet,
+            Trigger: ["workflow"],
+          }).then(
+            async function (successResponse) {
+              if (hire) {
+                // Search for VP Evaluations for this candidate and job
+                try {
+                  console.log(
+                    "Searching for VP Evaluations for candidate:",
+                    candidateId,
+                    "and job:",
+                    jobId[0]
+                  );
+
+                  const vpEvaluationSearchResponse =
+                    await ZOHO.RECRUIT.API.searchRecord({
+                      Entity: "VP_Evaluation",
+                      criteria: `((Candidate:equals:${candidateId})and(Job_Opening:equals:${jobId[0]}))`,
+                      sort_by: "Created_Time",
+                      sort_order: "desc",
+                    });
+
+                  console.log(
+                    "VP Evaluation search response:",
+                    vpEvaluationSearchResponse
+                  );
+
+                  if (
+                    vpEvaluationSearchResponse.data &&
+                    vpEvaluationSearchResponse.data.length > 0
+                  ) {
+                    const latestVPEvaluation =
+                      vpEvaluationSearchResponse.data[0];
+                    console.log(
+                      "Found VP Evaluation, updating Job_Opening with VP_Evaluation_ID:",
+                      latestVPEvaluation.id
+                    );
+
+                    // Update the Job_Opening with the VP_Evaluation_ID
+                    await ZOHO.RECRUIT.API.updateRecord({
+                      Entity: "Job_Openings",
+                      APIData: {
+                        id: jobId[0],
+                        VP_Evaluation_ID: latestVPEvaluation.id,
+                      },
+                      Trigger: ["workflow"],
+                    });
+
+                    console.log(
+                      "Successfully updated Job_Opening with VP_Evaluation_ID"
+                    );
+                  } else {
+                    console.log(
+                      "No VP Evaluation found for this candidate and job"
+                    );
+                  }
+                } catch (vpEvaluationError) {
+                  console.error(
+                    "Error searching for VP Evaluations:",
+                    vpEvaluationError
+                  );
+                  // Don't fail the hire process if VP Evaluation search fails
+                }
+
+                if (!suppressMessages) {
+                  Swal.fire({
+                    icon: "success",
+                    title: "VP Hired",
+                    text: `VP ${candidateName} has been successfully hired.`,
+                  }).then(() => {
+                    location.reload();
+                  });
+                } else {
+                  location.reload();
+                }
+              } else {
+                if (!suppressMessages) {
+                  Swal.fire({
+                    icon: "success",
+                    title: "VP UnHired",
+                    text: `VP has been successfully UnHired.`,
+                  }).then(() => {
+                    const widgetUnHired =
+                      document.getElementById("widgetUnhired");
+                    widgetUnHired.classList.remove("d-none");
+                    const widgetHired = document.getElementById("widgetHired");
+                    widgetHired.classList.add("d-none");
+                  });
+                } else {
+                  // Just switch widgets without showing message when suppressMessages is true
+                  const widgetUnHired =
+                    document.getElementById("widgetUnhired");
+                  widgetUnHired.classList.remove("d-none");
+                  const widgetHired = document.getElementById("widgetHired");
+                  widgetHired.classList.add("d-none");
+                }
+              }
+            },
+            function (errorResponse) {
+              // console.log("Error", errorResponse);
+              Swal.fire({
+                icon: "error",
+                title: "Hiring Failed",
+                text: "There was an error hiring the candidate. Please try again.",
+              });
+            }
+          );
+        }
+      }
+      // Function to update engagement ID
+      function updateEngagementID(jobId, engagementAgreementId) {
+        ZOHO.RECRUIT.API.updateRecord({
+          Entity: "Job_Openings",
+          APIData: {
+            id: jobId[0],
+            Engagement_Contract_ID: engagementAgreementId,
+          },
+          Trigger: ["workflow"],
+        }).then(
+          function (successResponse) {
+            if (engagementAgreementId === null) {
+              document
+                .getElementById("voidEngagementAgreement")
+                .classList.add("d-none");
+              document
+                .getElementById("sendEngagementAgreement")
+                .classList.remove("d-none");
+            }
+          },
+          function (errorResponse) {
+            // console.log("Error", errorResponse);
+            Swal.fire({
+              icon: "error",
+              title: "Hiring Failed",
+              text: "There was an error hiring the candidate. Please try again.",
+            });
+          }
+        );
+      }
+      // Update VP Agreement ID
+      function updateVPAgreementID(jobId, candidateAgreementId) {
+        ZOHO.RECRUIT.API.updateRecord({
+          Entity: "Job_Openings",
+          APIData: {
+            id: jobId[0],
+            Candidate_Contract_ID: candidateAgreementId,
+          },
+          Trigger: ["workflow"],
+        }).then(
+          function (successResponse) {
+            Swal.fire({
+              icon: "success",
+              title: "Success",
+              text: `${
+                candidateAgreementId === null
+                  ? "Successfully Voided VP Agreement"
+                  : " VP Agreement has been successfully Created & Sent!"
+              } `,
+            }).then(() => {
+              if (candidateAgreementId === null) {
+                document
+                  .getElementById("voidVPAgreement")
+                  .classList.add("d-none");
+                document
+                  .getElementById("createCandidateAgreement")
+                  .classList.remove("d-none");
+              }
+            });
+          },
+          function (errorResponse) {
+            // console.log("Error", errorResponse);
+            Swal.fire({
+              icon: "error",
+              title: "Hiring Failed",
+              text: "There was an error hiring the candidate. Please try again.",
+            });
+          }
+        );
+      }
+
+      // updateClientAgreementID
+      function updateClientAgreementID(jobId, ClientAgreementId) {
+        ZOHO.RECRUIT.API.updateRecord({
+          Entity: "Job_Openings",
+          APIData: {
+            id: jobId[0],
+            Client_Contract_ID: ClientAgreementId,
+          },
+          Trigger: ["workflow"],
+        }).then(
+          function (successResponse) {
+            Swal.fire({
+              icon: "success",
+              title: "Client Agreement Updated",
+              text: `Client Agreement has been successfully Updated.`,
+            }).then(() => {
+              if (ClientAgreementId === null) {
+                document
+                  .getElementById("voidVPAgreement")
+                  .classList.add("d-none");
+                document
+                  .getElementById("createCandidateAgreement")
+                  .classList.remove("d-none");
+              }
+            });
+          },
+          function (errorResponse) {
+            // console.log("Error", errorResponse);
+            Swal.fire({
+              icon: "error",
+              title: "Hiring Failed",
+              text: "There was an error hiring the candidate. Please try again.",
+            });
+          }
+        );
+      }
+
+      // Function to update job
+      function updateJob(
+        jobId,
+        engagementFee,
+        billingStreetUpdated,
+        billingZipCodeUpdated,
+        billingStateUpdated,
+        billingCityUpdated,
+        UpdatedCompanyName
+      ) {
+        ZOHO.RECRUIT.API.updateRecord({
+          Entity: "Job_Openings",
+          APIData: {
+            id: jobId[0],
+            Engagement_Fee: engagementFee,
+            Street: billingStreetUpdated,
+            Single_Line_35: billingZipCodeUpdated,
+            Single_Line_34: billingStateUpdated,
+            Single_Line_33: billingCityUpdated,
+            Company_Name: UpdatedCompanyName,
+          },
+          Trigger: ["workflow"],
+        }).then(
+          function (successResponse) {
+            Swal.fire({
+              icon: "success",
+              title: "Engagement Agreement Sent",
+              text: `Engagement Agreement has been successfully Sent.`,
+            }).then(() => {
+              updateEngagementID(
+                jobId,
+                successResponse?.data?.[0]?.Engagement_Contract_ID
+              );
+              const widgetUnHired = document.getElementById("widgetUnhired");
+              widgetUnHired.classList.remove("d-none");
+              const widgetHired = document.getElementById("widgetHired");
+              widgetHired.classList.add("d-none");
+              document
+                .getElementById("sendEngagementAgreement")
+                .classList.add("d-none");
+              document
+                .getElementById("voidEngagementAgreement")
+                .classList.remove("d-none");
+            });
+          },
+          function (errorResponse) {
+            // console.log("Error", errorResponse);
+            Swal.fire({
+              icon: "error",
+              title: "Hiring Failed",
+              text: "There was an error hiring the candidate. Please try again.",
+            });
+          }
+        );
+      }
+
+      async function sendEmailToCandidates(candidateIds, jobId) {
+        const cleanJobId = jobId[0];
+        const updatePromises = [];
+
+        // Show loading state on the email button
+        const sendEmailBtn = document.getElementById("sendEmailBtn");
+        const originalBtnText = sendEmailBtn.innerHTML;
+        sendEmailBtn.disabled = true;
+        sendEmailBtn.innerHTML =
+          '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Sending...';
+
+        try {
+          for (const candidateId of candidateIds) {
+            try {
+              // Add the updateRecord promise to the array
+              updatePromises.push(
+                ZOHO.RECRUIT.API.updateRecord({
+                  Entity: "Candidates",
+                  APIData: {
+                    id: candidateId,
+                    Send_Email_To_Marko: true,
+                    Job_ID: cleanJobId,
+                  },
+                })
+              );
+
+              const url = `https://workdrive-sync-884372294.development.catalystserverless.com/server/Send_Email_To_Candidate/execute?Job_ID=${jobId}&Candidate_IDs=${candidateId}`;
+              const postBody = {
+                data: [{ Job_ID: jobId, Candidate_IDs: candidateId }],
+              };
+              const postRequest = {
+                url: url,
+                body: postBody,
+              };
+
+              // Make the HTTP request and store the response
+              const response = await ZOHO.RECRUIT.HTTP.post(postRequest);
+              console.log("Catalyst Webhook response: ", response);
+            } catch (error) {
+              console.error(
+                `Error processing candidate ${candidateId}:`,
+                error
+              );
+              // Continue with next candidate even if one fails
+              continue;
+            }
+          }
+
+          // Wait for all updateRecord promises to complete
+          await Promise.all(updatePromises);
+
+          // Show success message
+          await Swal.fire({
+            icon: "success",
+            title: "Emails Sent",
+            text: "Emails have been successfully sent to the selected candidates.",
+          });
+        } catch (error) {
+          console.log("Email Error", error);
+          await Swal.fire({
+            icon: "error",
+            title: "Email Sending Failed",
+            text: "There was an error sending emails. Please try again.",
+          });
+        } finally {
+          // Restore button state
+          sendEmailBtn.disabled = false;
+          sendEmailBtn.innerHTML = originalBtnText;
+          location.reload();
+        }
+      }
+    </script>
+  </body>
+</html>
