@@ -381,6 +381,14 @@
           <span id="serviceHours1" class="text-sm fw-normal"></span>
         </p>
         <p class="w-100 d-flex justify-content-between gap-2">
+          <span class="fw-bolder text-nowrap">Client Other Terms: </span>
+          <span id="clientOtherTerms1" class="text-sm fw-normal"></span>
+        </p>
+        <p class="w-100 d-flex justify-content-between gap-2">
+          <span class="fw-bolder text-nowrap">VP Other Terms: </span>
+          <span id="VPOtherTerms1" class="text-sm fw-normal"></span>
+        </p>
+        <p class="w-100 d-flex justify-content-between gap-2">
           <span class="fw-bolder text-nowrap">VP Monthly Rate: </span>
           <span id="candidateMonthlyRate1" class="text-sm fw-normal"></span>
         </p>
@@ -452,6 +460,8 @@
         var hireDate;
         var servicesPerformed;
         var serviceHours;
+        var clientOtherTerms;
+        var VPOtherTerms;
         var vpMonthlyRate;
         var clientBillingRate;
         var candidateId;
@@ -559,6 +569,10 @@
               successResponse?.data[0]?.Services_to_be_Performed;
             document.getElementById("serviceHours1").innerText =
               successResponse?.data[0]?.Service_Hours;
+            document.getElementById("clientOtherTerms1").innerText =
+              successResponse?.data[0]?.Client_Other_Terms;
+            document.getElementById("VPOtherTerms1").innerText =
+              successResponse?.data[0]?.VP_Other_Terms;
             document.getElementById("candidateMonthlyRate1").innerText =
               successResponse?.data[0]?.Service_Fees;
             document.getElementById("clientBillingRate1").innerText =
@@ -574,6 +588,8 @@
             servicesPerformed =
               successResponse?.data[0]?.Services_to_be_Performed;
             serviceHours = successResponse?.data[0]?.Service_Hours;
+            clientOtherTerms = successResponse?.data[0]?.Client_Other_Terms;
+            VPOtherTerms = successResponse?.data[0]?.VP_Other_Terms;
             vpMonthlyRate = successResponse?.data[0]?.Service_Fees;
             clientBillingRate = successResponse?.data[0]?.Client_Billing_Rate;
             candidateId = successResponse?.data[0]?.Candidate?.id;
@@ -2283,6 +2299,19 @@
                       </label>
                       <textarea required class="form-control" id="serviceHours" name="serviceHours"></textarea>
                     </div>
+                      <div class="mb-3">
+                      <label for="clientOtherTerms" class="form-label w-100 d-flex justify-content-start">
+                        Client Other Terms
+                      </label>
+                      <textarea class="form-control" id="clientOtherTerms" name="clientOtherTerms"></textarea>
+                    </div>
+                      </div>
+                    <div class="mb-3">
+                      <label for="VPOtherTerms" class="form-label w-100 d-flex justify-content-start">
+                        VP Other Terms
+                      </label>
+                      <textarea class="form-control" id="VPOtherTerms" name="VPOtherTerms"></textarea>
+                    </div>
                     <div class="mb-3">
                       <label for="candidateMonthlyRate" class="form-label w-100 d-flex justify-content-start">
                         VP Monthly Rate <span class="text-danger">*</span>
@@ -2355,6 +2384,8 @@
               // Trigger initial resize
               resizeTextarea();
               document.getElementById("serviceHours").value = serviceHours;
+              document.getElementById("clientOtherTerms").value = clientOtherTerms;
+              document.getElementById("VPOtherTerms").value = VPOtherTerms;
               document.getElementById("candidateMonthlyRate").value =
                 vpMonthlyRate;
               document.getElementById("clientBillingRate").value =
@@ -2480,6 +2511,10 @@
                     ).value;
                     const serviceHours =
                       document.getElementById("serviceHours").value;
+                    const clientOtherTerms =
+                      document.getElementById("clientOtherTerms").value;
+                    const VPOtherTerms =
+                      document.getElementById("VPOtherTerms").value;
                     const candidateMonthlyRate = document.getElementById(
                       "candidateMonthlyRate"
                     ).value;
@@ -2553,6 +2588,8 @@
                         serviceCommencementDateValue,
                         servicesToBePerformed,
                         serviceHours,
+                        clientOtherTerms,
+                        VPOtherTerms,
                         candidateMonthlyRate,
                         clientBillingRate,
                         candidatePosition,
@@ -2571,6 +2608,8 @@
                       serviceCommencementDateValue,
                       servicesToBePerformed,
                       serviceHours,
+                      clientOtherTerms,
+                      VPOtherTerms,
                       candidateMonthlyRate,
                       clientBillingRate,
                       candidatePosition,
@@ -2868,7 +2907,6 @@
 
                 Trigger: ["workflow"],
               });
-              console.log(APIData, 'api data');
 
               // Search for the newly created VP Evaluation to get updated status
               const vpEvaluationSearchResponse =
@@ -2924,7 +2962,7 @@
             });
           } finally {
             const createBtn = document.getElementById("sendVPEvaluation");
-            createBtn.disabled = false;
+            createBtn.disabled = true;
             createBtn.innerHTML = "Send VP Evaluation Form";
           }
         }
@@ -3016,6 +3054,8 @@
                     hiredCandidateDetails.serviceCommencementDate,
                     hiredCandidateDetails.servicesToBePerformed,
                     hiredCandidateDetails.serviceHours,
+                    hiredCandidateDetails.clientOtherTerms,
+                    hiredCandidateDetails.VPOtherTerms,
                     hiredCandidateDetails.candidateMonthlyRate,
                     hiredCandidateDetails.clientBillingRate,
                     hiredCandidateDetails.candidatePosition,
@@ -3061,6 +3101,8 @@
                     hiredCandidateDetails.serviceCommencementDate,
                     hiredCandidateDetails.servicesToBePerformed,
                     hiredCandidateDetails.serviceHours,
+                    hiredCandidateDetails.clientOtherTerms,
+                    hiredCandidateDetails.VPOtherTerms,
                     hiredCandidateDetails.candidateMonthlyRate,
                     hiredCandidateDetails.clientBillingRate,
                     hiredCandidateDetails.candidatePosition,
@@ -3181,6 +3223,8 @@
         serviceCommencementDateId,
         servicesToBePerformed,
         serviceHours,
+        clientOtherTerms,
+        VPOtherTerms,
         candidateMonthlyRate,
         clientBillingRate,
         candidatePosition,
@@ -3209,6 +3253,8 @@
             Candidate_Country: hire ? candidateCountry : "",
             Client_Billing_Rate: clientBillingRate,
             Service_Hours: hire ? serviceHours : "",
+            Client_Other_Terms: hire ? clientOtherTerms : "",
+            VP_Other_Terms: hire ? VPOtherTerms : "",
             Service_Commencement_Date: hire ? serviceCommencementDateId : "",
             Services_to_be_Performed: hire ? servicesToBePerformed : "",
             Service_Fees: hire ? candidateMonthlyRate : "",
@@ -3350,6 +3396,8 @@
             Candidate_Country: hire ? candidateCountry : "",
             Client_Billing_Rate: clientBillingRate,
             Service_Hours: hire ? serviceHours : "",
+            Client_Other_Terms: hire ? clientOtherTerms : "",
+            VP_Other_Terms: hire ? VPOtherTerms : "",
             Service_Commencement_Date: hire ? serviceCommencementDateId : "",
             Services_to_be_Performed: hire ? servicesToBePerformed : "",
             Service_Fees: hire ? candidateMonthlyRate : "",
